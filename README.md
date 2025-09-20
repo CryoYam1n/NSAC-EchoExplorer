@@ -1,7 +1,25 @@
-# NASA Space Apps Challenge 2025: Echo Explorer
+# NASA Space Apps Challenge 2025: Echo Explorer - Climate Disaster Risk Platform
+
+> A comprehensive climate disaster prediction system leveraging NASA SAR (Synthetic Aperture Radar) data and machine learning to provide early warning capabilities for floods, wildfires, urban heat events, and deforestation, combined with an early warning risk platform and the CosmoRadar Earth Observing Mission, powered by NASA.
+
+[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Flask](https://img.shields.io/badge/flask-2.0+-green.svg)](https://flask.palletsprojects.com/)
+[![NASA Space Apps Challenge](https://img.shields.io/badge/NASA%20Space%20Apps-2025-orange.svg)](https://spaceappschallenge.org/)
 
 
-## 📂 SAR Data Sets  
+
+## 🌍 Project Overview
+
+Echo Explorer is an advanced web application developed for the NASA Space Apps Challenge 2025, designed to transform complex satellite data into actionable climate disaster predictions. The system processes multiple SAR data formats and employs state-of-the-art machine learning algorithms to assess environmental risks with high accuracy.
+
+### Key Capabilities
+
+- **Multi-modal SAR Analysis**: Processes NASA GOES .filt files and standard satellite imagery
+- **Real-time Risk Assessment**: Provides confidence-scored predictions for four disaster types
+- **Interactive Visualization**: Modern web interface with professional data presentation
+- **Comprehensive Feature Extraction**: 15+ specialized SAR features for enhanced prediction accuracy
+
+### 📂 SAR Data Sets  
 
 The following datasets from **NASA Earthdata** were referenced for the project:  
 - **BA-ECO LC-35 GOES Imager Active Fire Detection Data, South America: 2000-2005:** https://data.nasa.gov/
@@ -46,8 +64,8 @@ This module focuses on **SAR-driven climate intelligence**, powered by:
 - **Predictive frameworks** capable of anticipating environmental and societal risks.  
 
 <img width="1142" height="2520" alt="image" src="https://github.com/user-attachments/assets/0c688e61-5ce5-43b3-ba82-28cad0aea3fb" />
+<img width="758" height="722" alt="Screenshot 2025-09-19 151421" src="https://github.com/user-attachments/assets/207a53b4-c74a-40f4-8666-df950cd2d6c4" />
 
-<img width="1132" height="1951" alt="image" src="https://github.com/user-attachments/assets/9e8fb9a3-6165-4b43-b2d9-56b7f481cdb3" />
 
 
 
@@ -66,25 +84,7 @@ Together, these capabilities position the platform as a **decision-support syste
 
 
 
-# Echo Explorer - Climate Disaster Prediction System
 
-[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![Flask](https://img.shields.io/badge/flask-2.0+-green.svg)](https://flask.palletsprojects.com/)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![NASA Space Apps Challenge](https://img.shields.io/badge/NASA%20Space%20Apps-2025-orange.svg)](https://spaceappschallenge.org/)
-
-> A comprehensive climate disaster prediction system leveraging NASA SAR (Synthetic Aperture Radar) data and machine learning to provide early warning capabilities for floods, wildfires, urban heat events, and deforestation.
-
-## 🌍 Project Overview
-
-Echo Explorer is an advanced web application developed for the NASA Space Apps Challenge 2025, designed to transform complex satellite data into actionable climate disaster predictions. The system processes multiple SAR data formats and employs state-of-the-art machine learning algorithms to assess environmental risks with high accuracy.
-
-### Key Capabilities
-
-- **Multi-modal SAR Analysis**: Processes NASA GOES .filt files and standard satellite imagery
-- **Real-time Risk Assessment**: Provides confidence-scored predictions for four disaster types
-- **Interactive Visualization**: Modern web interface with professional data presentation
-- **Comprehensive Feature Extraction**: 15+ specialized SAR features for enhanced prediction accuracy
 
 ## 🚀 Features
 
@@ -365,8 +365,6 @@ Edit `model_trainer.py` to adjust:
 
 - [ ] Real-time satellite data integration
 - [ ] Advanced ensemble methods
-- [ ] Multi-language support
-- [ ] Mobile application
 - [ ] API rate limiting and authentication
 - [ ] Automated model retraining pipeline
 
@@ -374,12 +372,8 @@ Edit `model_trainer.py` to adjust:
 
 - [ ] Sub-second prediction response time
 - [ ] 99%+ uptime availability
-- [ ] Support for 10,000+ concurrent users
 - [ ] Integration with NASA EARTHDATA API
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
@@ -393,27 +387,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ### Project Maintainer
 **Ashabul Yamin Tuhin**  
 📧 Email: ashabulyamintuhin@gmail.com  
-🔗 GitHub: [@your-github-username](https://github.com/your-github-username)
+🔗 GitHub: [infernoYam1n](https://github.com/your-infernoYam1n)
 
-### Support Channels
 
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/your-username/echo-explorer/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/your-username/echo-explorer/discussions)
-- 📚 **Documentation**: [Project Wiki](https://github.com/your-username/echo-explorer/wiki)
 
-### Citation
-
-If you use this project in academic work, please cite:
-
-```bibtex
-@software{echo_explorer_2025,
-  title={Echo Explorer: Climate Disaster Prediction System},
-  author={Tuhin, Ashabul Yamin},
-  year={2025},
-  url={https://github.com/your-username/echo-explorer},
-  note={NASA Space Apps Challenge 2025}
-}
-```
 
 ---
 
