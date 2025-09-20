@@ -1,10 +1,27 @@
 # NASA Space Apps Challenge 2025: Echo Explorer - Climate Disaster Risk Platform
 
 > A comprehensive climate disaster prediction system leveraging NASA SAR (Synthetic Aperture Radar) data and machine learning to provide early warning capabilities for floods, wildfires, urban heat events, and deforestation, combined with an early warning risk platform and the CosmoRadar Earth Observing Mission, powered by NASA.
+<div align="center">
+  <!-- Python Badge -->
+  <a href="https://www.python.org/downloads/" target="_blank">
+    <img src="https://img.shields.io/badge/Python-3.8+-blue?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  </a>
 
-[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![Flask](https://img.shields.io/badge/flask-2.0+-green.svg)](https://flask.palletsprojects.com/)
-[![NASA Space Apps Challenge](https://img.shields.io/badge/NASA%20Space%20Apps-2025-orange.svg)](https://spaceappschallenge.org/)
+  <!-- Flask Badge -->
+  <a href="https://flask.palletsprojects.com/" target="_blank">
+    <img src="https://img.shields.io/badge/Flask-2.0+-green?style=for-the-badge&logo=flask&logoColor=white" alt="Flask">
+  </a>
+
+  <!-- Echo Explorer Badge -->
+  <a href="https://echoexplorer.netlify.app/" target="_blank">
+    <img src="https://img.shields.io/badge/Echo%20Explorer-🌎-blueviolet?style=for-the-badge" alt="Echo Explorer">
+  </a>
+
+  <!-- NASA Space Apps Challenge Badge -->
+  <a href="https://spaceappschallenge.org/" target="_blank">
+    <img src="https://img.shields.io/badge/NASA%20Space%20Apps-2025-orange?style=for-the-badge&logo=nasa&logoColor=white" alt="NASA Space Apps Challenge">
+  </a>
+</div>
 
 
 
@@ -368,19 +385,12 @@ Edit `model_trainer.py` to adjust:
 - [ ] API rate limiting and authentication
 - [ ] Automated model retraining pipeline
 
-### Performance Goals
 
-- [ ] Sub-second prediction response time
-- [ ] 99%+ uptime availability
-- [ ] Integration with NASA EARTHDATA API
-
-
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - **NASA Space Apps Challenge 2025** for the opportunity and datasets
 - **NASA Earth Science Division** for SAR data access
 - **Open Source Community** for excellent Python libraries
-- **Contributors** who help improve this project
 
 ## 📞 Contact & Support
 
