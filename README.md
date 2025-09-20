@@ -19,12 +19,8 @@ The **Hero & Index** section introduces *Echo Explorer’s* vision:
 - A user-friendly landing interface designed for **clarity, accessibility, and global impact**.  
 - Establishes the project’s mission to bridge **space technology** with **climate action**.  
 
-<img width="1720" height="985" alt="image" src="https://github.com/user-attachments/assets/08426a1b-385e-46b5-98dd-5e3b0851083a" />
 
-<img width="1767" height="850" alt="image" src="https://github.com/user-attachments/assets/f2627670-471d-4772-bd2a-518f84a21815" />
 <img width="1766" height="844" alt="image" src="https://github.com/user-attachments/assets/c6ef5e6e-1dcd-4756-82c1-fea707c7b72a" />
-<img width="1130" height="920" alt="image" src="https://github.com/user-attachments/assets/dc0c0958-528b-4a7e-9bf5-8a1f4f67b0aa" />
-<img width="841" height="919" alt="image" src="https://github.com/user-attachments/assets/d0fde849-9c71-4af8-964e-420070414a1d" />
 
 
 ## 🛰️ CosmoRadar System  
@@ -50,7 +46,6 @@ This module focuses on **SAR-driven climate intelligence**, powered by:
 - **Predictive frameworks** capable of anticipating environmental and societal risks.  
 
 <img width="1142" height="2520" alt="image" src="https://github.com/user-attachments/assets/0c688e61-5ce5-43b3-ba82-28cad0aea3fb" />
-<img width="1132" height="2505" alt="image" src="https://github.com/user-attachments/assets/dcd72fe3-ad56-4701-bb9f-dcd378114850" />
 
 <img width="1132" height="1951" alt="image" src="https://github.com/user-attachments/assets/9e8fb9a3-6165-4b43-b2d9-56b7f481cdb3" />
 
@@ -66,318 +61,369 @@ This module extends beyond climate monitoring to address **global resilience and
 
 Together, these capabilities position the platform as a **decision-support system** for governments, humanitarian agencies, and international organizations working toward long-term resilience and global security.  
 
-<img width="1132" height="922" alt="image" src="https://github.com/user-attachments/assets/75d3364f-d08a-45cf-9702-bb2d1c24334c" />
 <img width="1206" height="922" alt="image" src="https://github.com/user-attachments/assets/a70e1385-18e8-49a1-ba72-5fc77c746198" />
 
 
-<img width="1586" height="920" alt="image" src="https://github.com/user-attachments/assets/5cb74c53-b32f-4467-b280-03d654a95f7e" />
 
 
+# Echo Explorer - Climate Disaster Prediction System
 
+[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Flask](https://img.shields.io/badge/flask-2.0+-green.svg)](https://flask.palletsprojects.com/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![NASA Space Apps Challenge](https://img.shields.io/badge/NASA%20Space%20Apps-2025-orange.svg)](https://spaceappschallenge.org/)
 
+> A comprehensive climate disaster prediction system leveraging NASA SAR (Synthetic Aperture Radar) data and machine learning to provide early warning capabilities for floods, wildfires, urban heat events, and deforestation.
 
-## Executive Summary
+## 🌍 Project Overview
 
-This repository presents a sophisticated, enterprise-grade platform developed for the NASA Space Apps Challenge 2025, integrating cutting-edge machine learning, real-time satellite data processing, and advanced geospatial analytics. Our solution addresses critical challenges in climate disaster monitoring, planetary exploration, and global security through a unified intelligence framework that processes petabyte-scale datasets and delivers actionable insights with unprecedented accuracy.
+Echo Explorer is an advanced web application developed for the NASA Space Apps Challenge 2025, designed to transform complex satellite data into actionable climate disaster predictions. The system processes multiple SAR data formats and employs state-of-the-art machine learning algorithms to assess environmental risks with high accuracy.
 
-## Technical Architecture
+### Key Capabilities
 
-### Core Platform Components
+- **Multi-modal SAR Analysis**: Processes NASA GOES .filt files and standard satellite imagery
+- **Real-time Risk Assessment**: Provides confidence-scored predictions for four disaster types
+- **Interactive Visualization**: Modern web interface with professional data presentation
+- **Comprehensive Feature Extraction**: 15+ specialized SAR features for enhanced prediction accuracy
 
-#### 1. Climate Disaster Risk Platform (CDRP)
-**Mission-Critical Disaster Intelligence System**
+## 🚀 Features
 
-- **Advanced ML Pipeline**: Deep learning ensemble models achieving 97.3% prediction accuracy with confidence intervals
-- **Real-Time Data Ingestion**: Multi-source satellite data fusion processing 3.8TB daily through optimized ETL pipelines
-- **Geospatial Intelligence**: Dynamic risk assessment algorithms incorporating topographical, meteorological, and historical data
-- **Alert Distribution**: Automated early warning system with customizable severity thresholds and stakeholder notifications
-- **Performance Metrics**: Sub-second response time for disaster classification with 99.97% system availability
+### Core Functionality
 
-#### 2. COSMORUDDER – Interplanetary Synthetic Aperture Radar Navigator
-**Next-Generation Solar System Exploration Interface**
+- **Climate Disaster Prediction**: ML-powered analysis for floods, fires, urban heat, and deforestation
+- **Multi-format Support**: Handles .filt, .jpg, .png, .tif, and .tiff files
+- **Interactive Dashboard**: Real-time system status and model performance metrics
+- **Professional Reporting**: Detailed risk assessments with actionable recommendations
 
-- **Multi-Frequency SAR Analysis**: L-Band (1-2 GHz), C-Band (4-8 GHz), and X-Band (8-12 GHz) data processing
-- **Orbital Mechanics Engine**: High-precision N-body simulation with relativistic corrections
-- **Temporal Analysis Framework**: Multi-temporal change detection algorithms for planetary surface monitoring
-- **Interactive Visualization**: WebGL-accelerated 3D rendering with photorealistic textures and lighting models
-- **Data Integration**: Real-time ingestion from multiple NASA APIs and international space agencies
+### Technical Highlights
 
-#### 3. Global Security Intelligence (GSI) Module
-**Comprehensive Earth Observation Security Framework**
+- **Advanced ML Pipeline**: Ensemble methods with cross-validation and hyperparameter optimization
+- **Professional UI/UX**: Responsive design with dark/light theme support
+- **Robust Error Handling**: Comprehensive validation and fallback mechanisms
+- **Performance Monitoring**: Built-in metrics tracking and model evaluation
 
-- **Multi-Spectral Analysis**: Automated threat detection using hyperspectral imaging and pattern recognition
-- **Anomaly Detection**: Unsupervised learning algorithms for identifying irregular patterns in satellite imagery
-- **Geopolitical Risk Assessment**: Cross-referential analysis of environmental and socioeconomic indicators
-- **Classified Data Handling**: Secure processing pipelines with end-to-end encryption and access controls
-
-***
-
-## Project Structure
+## 🏗️ System Architecture
 
 ```
-nasa-space-apps-2025/
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Frontend      │    │   Flask App      │    │  ML Pipeline    │
+│  (HTML/CSS/JS)  │◄──►│   (app.py)       │◄──►│ (model_trainer) │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+                                │
+                                ▼
+                       ┌──────────────────┐
+                       │  Data Processor  │
+                       │ (data_processor) │
+                       └──────────────────┘
+                                │
+                                ▼
+                       ┌────────────────────┐
+                       │   NASA SAR Data    │
+                       │ (.filt, .tif, etc) │
+                       └────────────────────┘
+```
+
+## 📋 Prerequisites
+
+- Python 3.8 or higher
+- 4GB+ RAM (8GB recommended for large datasets)
+- 2GB free disk space
+- Modern web browser (Chrome, Firefox, Safari, Edge)
+
+## 🛠️ Installation & Setup
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/your-username/echo-explorer.git
+cd echo-explorer
+```
+
+### 2. Create Virtual Environment
+
+```bash
+python -m venv echo_env
+
+# Windows
+echo_env\Scripts\activate
+
+# macOS/Linux
+source echo_env/bin/activate
+```
+
+### 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Directory Structure Setup
+
+Ensure your project follows this structure:
+
+```
+echo-explorer/
+├── app.py                 # Main Flask application
+├── data_processor.py      # SAR data processing pipeline
+├── model_trainer.py       # ML model training and evaluation
+├── requirements.txt       # Python dependencies
+├── templates/
+│   └── index.html        # Main web interface
 ├── static/
-│   ├── assets/          # Images and media assets
-│   ├── js/              # JavaScript modules
-│   └── textures/        # 3D visualization textures and models
-├── templates/           # HTML templates for different UI pages
-│   ├── index.html       # Main dashboard
-│   ├── climate.html     # Climate monitoring interface
-│   ├── CDRP.html        # Disaster risk platform
-│   ├── GSI.html         # Global security interface
-│   └── main2.html       # COSMORUDDER solar system navigator
-├── app.py               # Main Flask application entry point
-├── data_processor.py    # Satellite and sensor data processing
-├── model_trainer.py     # Machine learning model training scripts
-├── model_info.json      # ML model metadata and config
-├── model.pkl            # Serialized trained machine learning model
-├── scaler.pkl           # Data scaler for pre-processing inputs
-└── requirements.txt     # Python package dependencies
+│   ├── css/
+│   ├── js/
+│   └── assets/           # Images and media files
+└── data/                 # NASA SAR datasets (create this folder)
+    ├── forest_fire/
+    ├── flood_data/
+    ├── urban_heat/
+    └── urban_classification/
 ```
 
-***
+### 5. Data Preparation
 
-## Advanced Technology Stack
-
-### Backend Infrastructure
-```
-├── Core Processing Layer
-│   ├── Python 3.11+ (NumPy, SciPy, Pandas ecosystem)
-│   ├── TensorFlow 2.15+ / PyTorch 2.1+ (Deep Learning)
-│   ├── Apache Kafka (Real-time streaming)
-│   └── Redis Cluster (High-performance caching)
-├── API Gateway
-│   ├── FastAPI (Async high-performance API)
-│   ├── GraphQL (Flexible data querying)
-│   └── OAuth 2.0 / JWT (Security & Authentication)
-├── Database Systems
-│   ├── PostgreSQL + PostGIS (Geospatial data)
-│   ├── MongoDB (Document storage)
-│   ├── InfluxDB (Time-series data)
-│   └── Elasticsearch (Full-text search & analytics)
-└── Containerization & Orchestration
-    ├── Docker / Podman
-    ├── Kubernetes
-    └── Helm Charts
-```
-
-### Frontend Architecture
-```
-├── Progressive Web Application (PWA)
-│   ├── React 18+ (Component architecture)
-│   ├── TypeScript (Type safety)
-│   ├── Redux Toolkit (State management)
-│   └── Material-UI / Tailwind CSS
-├── 3D Visualization Engine
-│   ├── Three.js / WebGL 2.0
-│   ├── WebAssembly (Performance-critical computations)
-│   └── Web Workers (Background processing)
-└── Real-Time Communication
-    ├── WebSocket connections
-    ├── Server-Sent Events (SSE)
-    └── WebRTC (P2P data channels)
-```
-
-### Data Processing Pipeline
-```
-├── Data Ingestion Layer
-│   ├── NASA Open Data Portal APIs
-│   ├── MODIS, Landsat, Sentinel satellite feeds
-│   ├── NOAA Weather Service APIs
-│   └── ESA Copernicus Program data
-├── Processing Infrastructure
-│   ├── Apache Spark (Distributed computing)
-│   ├── Dask (Parallel computing in Python)
-│   ├── GDAL/OGR (Geospatial data abstraction)
-│   └── OpenCV (Computer vision processing)
-└── ML/AI Framework
-    ├── Scikit-learn (Traditional ML algorithms)
-    ├── XGBoost/LightGBM (Gradient boosting)
-    ├── Transformers (NLP and vision transformers)
-    └── MLflow (Model lifecycle management)
-```
-
-## System Architecture Diagram
-
-```mermaid
-graph TB
-    A[Data Sources] --> B[Ingestion Layer]
-    B --> C[Processing Pipeline]
-    C --> D[ML/AI Engine]
-    D --> E[API Gateway]
-    E --> F[Frontend Applications]
-    
-    subgraph "Data Sources"
-        A1[NASA APIs]
-        A2[Satellite Feeds]
-        A3[Weather Services]
-        A4[Geospatial Data]
-    end
-    
-    subgraph "Processing Infrastructure"
-        C1[Apache Kafka]
-        C2[Apache Spark]
-        C3[Redis Cluster]
-        C4[PostgreSQL + PostGIS]
-    end
-    
-    subgraph "AI/ML Pipeline"
-        D1[Feature Engineering]
-        D2[Model Training]
-        D3[Real-time Inference]
-        D4[Model Monitoring]
-    end
-```
-
-## Performance Specifications
-
-### Scalability Metrics
-- **Concurrent Users**: 10,000+ simultaneous connections
-- **Data Throughput**: 3.8TB/day with burst capacity to 50TB/day
-- **API Response Time**: P95 < 100ms, P99 < 500ms
-- **Disaster Detection Latency**: < 30 seconds from satellite acquisition
-- **Model Inference**: < 5ms per prediction with GPU acceleration
-
-### Reliability & Availability
-- **System Uptime**: 99.99% SLA with automated failover
-- **Data Consistency**: ACID compliance with distributed transactions
-- **Backup Strategy**: Multi-region replication with point-in-time recovery
-- **Disaster Recovery**: RPO < 1 hour, RTO < 4 hours
-
-## Advanced Features & Capabilities
-
-### Machine Learning Operations (MLOps)
-- **Automated Model Training**: Continuous learning from incoming satellite data
-- **A/B Testing Framework**: Controlled deployment of model improvements
-- **Feature Store**: Centralized repository for engineered features
-- **Model Versioning**: Git-like versioning for ML models and datasets
-- **Monitoring & Alerting**: Real-time model performance tracking
-
-### Security & Compliance
-- **Zero Trust Architecture**: End-to-end encryption and verification
-- **RBAC Implementation**: Role-based access control with fine-grained permissions
-- **Audit Logging**: Comprehensive activity tracking and compliance reporting
-- **Data Privacy**: GDPR/CCPA compliant data handling with anonymization
-- **Penetration Testing**: Regular security assessments and vulnerability management
-
-### API Documentation & Integration
-
-#### RESTful API Endpoints
-```http
-GET    /api/v2/disasters/active              # Real-time disaster monitoring
-POST   /api/v2/disasters/predict             # Disaster prediction interface
-GET    /api/v2/satellites/data/{sensor_id}   # Satellite data retrieval
-POST   /api/v2/analysis/sar                  # SAR data analysis
-GET    /api/v2/planets/{planet_id}/orbital   # Orbital mechanics data
-```
-
-#### GraphQL Schema
-```graphql
-type Disaster {
-  id: ID!
-  type: DisasterType!
-  severity: Float!
-  coordinates: GeoCoordinates!
-  prediction: PredictionMetrics!
-  affectedRegions: [Region!]!
-}
-
-type Query {
-  activeDisasters(radius: Float, center: GeoCoordinates): [Disaster!]!
-  planetaryData(planet: String!, timeRange: DateRange): PlanetaryDataset!
-}
-```
-
-## Installation & Deployment
-
-### Development Environment Setup
+Place your NASA SAR data in the appropriate directories:
 
 ```bash
-# Clone repository with submodules
-git clone --recursive https://github.com/your-org/nasa-space-apps-2025.git
-cd nasa-space-apps-2025
-
-# Create isolated Python environment
-python3.11 -m venv venv
-source venv/bin/activate  # Linux/macOS
-# venv\Scripts\activate    # Windows
-
-# Install development dependencies
-pip install -r requirements-dev.txt
-pip install -e .
-
-# Initialize database and run migrations
-python scripts/init_database.py
-python scripts/run_migrations.py
-
-# Start development server with hot reloading
-python app.py --debug --reload
+mkdir -p data/forest_fire data/flood_data data/urban_heat data/urban_classification
 ```
 
+Copy your NASA datasets to these folders according to disaster type.
 
-## Testing & Quality Assurance
+### 6. Model Training
 
-### Comprehensive Test Suite
 ```bash
-# Unit tests with coverage reporting
-pytest tests/unit/ --cov=src --cov-report=html
+# Process the SAR datasets
+python data_processor.py
 
-# Integration tests
-pytest tests/integration/ --tb=short
-
-# End-to-end tests with Selenium
-pytest tests/e2e/ --browser=chrome --headless
-
-# Load testing with Locust
-locust -f tests/load/locustfile.py --host=http://localhost:8000
+# Train the ML models
+python model_trainer.py
 ```
 
-### Code Quality Standards
-- **Static Analysis**: Pylint, Black, isort, mypy
-- **Security Scanning**: Bandit, Safety, Snyk
-- **Documentation**: Sphinx with automated API docs
-- **Pre-commit Hooks**: Automated formatting and linting
+### 7. Launch Application
 
-## Monitoring & Observability
+```bash
+python app.py
+```
 
-### Application Performance Monitoring
-- **Metrics Collection**: Prometheus + Grafana dashboards
-- **Distributed Tracing**: Jaeger for request tracking
-- **Log Aggregation**: ELK Stack (Elasticsearch, Logstash, Kibana)
-- **Error Tracking**: Sentry for exception monitoring
-- **Uptime Monitoring**: Custom health checks and alerting
+Navigate to `http://localhost:5000` in your web browser.
 
+## 📊 Model Performance
 
+### Current Metrics (Validation Set)
 
-### Future Development Roadmap
-- **Q2 2025**: Integration with quantum computing for enhanced prediction models
-- **Q3 2025**: Deployment of federated learning for privacy-preserving global collaboration
-- **Q4 2025**: Implementation of digital twin technology for comprehensive Earth system modeling
+| Model | Accuracy | Precision | Recall | F1-Score | CV Score |
+|-------|----------|-----------|--------|----------|----------|
+| **Support Vector Machine** | 96.55% | 96.60% | 96.55% | 96.55% | 95.75% |
+| Gradient Boosting | 96.55% | 96.92% | 96.55% | 96.54% | 96.15% |
+| Random Forest | 96.55% | 96.65% | 96.55% | 96.53% | 95.38% |
+| Logistic Regression | 94.25% | 94.54% | 94.25% | 94.23% | 95.37% |
 
-## Contributing Guidelines
+*Note: Performance metrics based on processed NASA SAR datasets with 5-fold cross-validation.*
 
-### Development Workflow
-1. Fork repository and create feature branch
-2. Implement changes with comprehensive test coverage
-3. Ensure code passes all quality checks and CI/CD pipeline
-4. Submit pull request with detailed description and documentation updates
-5. Undergo peer review and automated testing validation
+## 🔧 Usage Guide
 
+### Web Interface
 
+1. **Access the Dashboard**: Open `http://localhost:5000`
+2. **Select Analysis Type**: Choose from Forest Fire, Flood, or Urban Heat analysis
+3. **Data Input Options**:
+   - Upload SAR images (recommended)
+   - Enter manual feature values
+4. **View Results**: Receive detailed risk assessment with confidence scores
 
+### API Endpoints
 
+```python
+# Prediction endpoint
+POST /predict
+Content-Type: multipart/form-data
 
+# Parameters:
+# - image: SAR image file (optional)
+# - features: comma-separated feature values (optional)
+# - data_type: 'forest', 'wetland', or 'urban'
+```
 
+### Feature Input Format
 
-## Contact Information
+For manual feature input, provide 15 comma-separated numerical values:
 
-**Project Maintainer**: Ashabul Yamin Tuhin 
-**Email**: ashabulyamintuhin@gmail.com  
+```
+156.5,45.2,89.1,255.0,178.3,0.85,0.92,2.1,8.5,12.4,8.9,1250.5,890.2,0.65,0.72
+```
 
+## 🧪 Testing & Validation
 
+### Run Unit Tests
+
+```bash
+python -m pytest tests/ -v
+```
+
+### Validate Model Performance
+
+```bash
+python model_trainer.py --validate
+```
+
+### Data Quality Checks
+
+```bash
+python data_processor.py --verify
+```
+
+## 🔍 Supported File Formats
+
+### SAR Data Formats
+
+- **.filt**: NASA GOES Imager format (specialized binary)
+- **.tif/.tiff**: GeoTIFF satellite imagery
+- **.jpg/.png**: Standard image formats (converted from SAR)
+
+### Feature Specifications
+
+The system extracts 15 specialized features from SAR data:
+
+1. **Statistical Features**: Mean, std, min, max, median intensity
+2. **Texture Features**: GLCM homogeneity, energy, entropy, contrast, correlation
+3. **Gradient Features**: Gradient magnitude statistics
+4. **Frequency Features**: FFT-based spectral analysis
+5. **Domain-Specific**: Forest index, water coverage, or urban density
+
+## ⚙️ Configuration
+
+### Environment Variables
+
+```bash
+# Optional: Set data path
+export SAR_DATA_PATH=/path/to/your/sar/data
+
+# Optional: Set model cache directory
+export MODEL_CACHE_DIR=/path/to/model/cache
+```
+
+### Model Configuration
+
+Edit `model_trainer.py` to adjust:
+
+- Cross-validation folds
+- Hyperparameter search ranges
+- Feature selection criteria
+- Performance thresholds
+
+## 🚨 Troubleshooting
+
+### Common Issues
+
+1. **Model files not found**
+   ```bash
+   # Solution: Run model training
+   python model_trainer.py
+   ```
+
+2. **Image processing errors**
+   ```bash
+   # Check file format and size
+   # Supported: .jpg, .png, .tif, .tiff, .filt
+   # Max size: 16MB
+   ```
+
+3. **Memory issues during training**
+   ```bash
+   # Reduce dataset size in data_processor.py
+   # Adjust limit_per_type parameter
+   ```
+
+### Performance Optimization
+
+- **Memory**: Increase system RAM for larger datasets
+- **Processing**: Use SSD storage for faster I/O operations
+- **Training**: Consider GPU acceleration for neural networks
+
+## 🤝 Contributing
+
+### Development Setup
+
+1. Fork the repository
+2. Create feature branch: `git checkout -b feature/amazing-feature`
+3. Make changes and test thoroughly
+4. Commit: `git commit -m 'Add amazing feature'`
+5. Push: `git push origin feature/amazing-feature`
+6. Open Pull Request
+
+### Code Standards
+
+- Follow PEP 8 Python style guide
+- Add docstrings to all functions
+- Include unit tests for new features
+- Update documentation as needed
+
+## 📈 Roadmap
+
+### Planned Features
+
+- [ ] Real-time satellite data integration
+- [ ] Advanced ensemble methods
+- [ ] Multi-language support
+- [ ] Mobile application
+- [ ] API rate limiting and authentication
+- [ ] Automated model retraining pipeline
+
+### Performance Goals
+
+- [ ] Sub-second prediction response time
+- [ ] 99%+ uptime availability
+- [ ] Support for 10,000+ concurrent users
+- [ ] Integration with NASA EARTHDATA API
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **NASA Space Apps Challenge 2025** for the opportunity and datasets
+- **NASA Earth Science Division** for SAR data access
+- **Open Source Community** for excellent Python libraries
+- **Contributors** who help improve this project
+
+## 📞 Contact & Support
+
+### Project Maintainer
+**Ashabul Yamin Tuhin**  
+📧 Email: ashabulyamintuhin@gmail.com  
+🔗 GitHub: [@your-github-username](https://github.com/your-github-username)
+
+### Support Channels
+
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/your-username/echo-explorer/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/your-username/echo-explorer/discussions)
+- 📚 **Documentation**: [Project Wiki](https://github.com/your-username/echo-explorer/wiki)
+
+### Citation
+
+If you use this project in academic work, please cite:
+
+```bibtex
+@software{echo_explorer_2025,
+  title={Echo Explorer: Climate Disaster Prediction System},
+  author={Tuhin, Ashabul Yamin},
+  year={2025},
+  url={https://github.com/your-username/echo-explorer},
+  note={NASA Space Apps Challenge 2025}
+}
+```
 
 ---
 
-*Developed with precision engineering and scientific rigor for the advancement of space exploration and planetary protection.*
+<div align="center">
 
-**© 2025 infernoYam1n. All rights reserved.**
+**🌍 Empowering climate science through space technology 🛰️**
+
+Developed for for NASA Space Apps Challenge 2025
+
+[![NASA](https://img.shields.io/badge/NASA-Space%20Apps-orange.svg)](https://spaceappschallenge.org/)
+[![Earth](https://img.shields.io/badge/Planet-Earth-blue.svg)](https://earthobservatory.nasa.gov/)
+
+</div>
