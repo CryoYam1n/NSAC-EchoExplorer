@@ -83,7 +83,7 @@ This module focuses on **SAR-driven climate intelligence**, powered by:
 - **Predictive frameworks** capable of anticipating environmental and societal risks.  
 
 <img width="1142" height="2520" alt="image" src="https://github.com/user-attachments/assets/0c688e61-5ce5-43b3-ba82-28cad0aea3fb" />
-<img width="758" height="722" alt="Screenshot 2025-09-19 151421" src="https://github.com/user-attachments/assets/207a53b4-c74a-40f4-8666-df950cd2d6c4" />
+<img width="1126" height="832" alt="Screenshot 2025-09-19 151506" src="https://github.com/user-attachments/assets/ed334335-feb4-4451-ac7f-1e50c5e90075" />
 
 
 
@@ -98,7 +98,8 @@ This module extends beyond climate monitoring to address **global resilience and
 
 Together, these capabilities position the platform as a **decision-support system** for governments, humanitarian agencies, and international organizations working toward long-term resilience and global security.  
 
-<img width="1126" height="832" alt="Screenshot 2025-09-19 151506" src="https://github.com/user-attachments/assets/ed334335-feb4-4451-ac7f-1e50c5e90075" />
+<img width="1155" height="922" alt="Screenshot 2025-09-16 034902" src="https://github.com/user-attachments/assets/5492c0d4-79cd-4958-af8d-04c622dd660d" />
+
 
 
 
