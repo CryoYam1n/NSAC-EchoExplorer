@@ -12,10 +12,7 @@
     <img src="https://img.shields.io/badge/Flask-2.0+-green?style=for-the-badge&logo=flask&logoColor=white" alt="Flask">
   </a>
 
-  <!-- Echo Explorer Badge -->
-  <a href="https://echoexplorer.netlify.app/" target="_blank">
-    <img src="https://img.shields.io/badge/Echo%20Explorer-🌎-blueviolet?style=for-the-badge" alt="Echo Explorer">
-  </a>
+
 
   <!-- NASA Space Apps Challenge Badge -->
   <a href="https://spaceappschallenge.org/" target="_blank">
@@ -23,7 +20,12 @@
   </a>
 </div>
 
-
+<div align="center">
+  <!-- Echo Explorer Badge -->
+  <a href="https://echoexplorer.netlify.app/" target="_blank">
+    <img src="https://img.shields.io/badge/Echo%20Explorer-🌎-blueviolet?style=for-the-badge" alt="Echo Explorer">
+  </a>
+</div>
 
 ## 🌍 Project Overview
 
