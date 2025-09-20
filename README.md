@@ -98,7 +98,8 @@ This module extends beyond climate monitoring to address **global resilience and
 
 Together, these capabilities position the platform as a **decision-support system** for governments, humanitarian agencies, and international organizations working toward long-term resilience and global security.  
 
-<img width="1206" height="922" alt="image" src="https://github.com/user-attachments/assets/a70e1385-18e8-49a1-ba72-5fc77c746198" />
+<img width="1126" height="832" alt="Screenshot 2025-09-19 151506" src="https://github.com/user-attachments/assets/ed334335-feb4-4451-ac7f-1e50c5e90075" />
+
 
 
 
