@@ -1,0 +1,21 @@
+{
+  "total_samples": 346,
+  "feature_count": 15,
+  "disaster_types": [
+    "heat",
+    "flood",
+    "fire"
+  ],
+  "class_distribution": {
+    "0": 266,
+    "2": 56,
+    "3": 24
+  },
+  "processing_date": "2025-09-18T17:51:38",
+  "data_sources": [
+    "NASA GOES Forest Fire Data",
+    "Water Bodies Flood Dataset",
+    "Urban Heat Island Data",
+    "Urban Classification Dataset"
+  ]
+}

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Climate Disaster Risk Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sea-green': {
+                            50: '#f0fdf9',
+                            100: '#ccfdf7',
+                            200: '#99faef',
+                            300: '#5ce8d5',
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                        },
+                        'mint-green': {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(
+    135deg,
+    #f9fdf9 0%,
+    #e6f7e9 25%,
+    #dff9e5 50%,
+    #f6fffaff 75%,
+    #f3fdf8 100%
+);
+
+            min-height: 100vh;
+        }
+        
+        .glass-effect {
+            backdrop-filter: blur(16px) saturate(180%);
+            background-color: rgba(240, 253, 244, 0.85);
+            border: 1px solid rgba(220, 252, 231, 0.3);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #0f766e, #14b8a6, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(20, 184, 166, 0.1), 0 10px 10px -5px rgba(20, 184, 166, 0.04);
+        }
+    </style>
+</head>
+<body class="font-sans">
+    
+    <div class="max-w-6xl mx-auto px-4 py-8">
+
+        <!-- Header -->
+        <div class="glass-effect rounded-md p-4 mb-4 text-center border-t-4 border-sea-green-800/20 hover-lift">
+            <h1 class="text-4xl md:text-5xl font-black mb-4 gradient-text">
+                <i class="bi bi-globe-americas mr-3"></i>Climate Disaster Risk Prediction
+            </h1>
+            <span class="inline-block bg-gradient-to-r from-sea-green-500 to-mint-green-500 text-white px-6 py-2 rounded-full text-sm font-bold uppercase tracking-wide">
+                NASA Space Apps Challenge 2025
+            </span>
+        </div>
+
+        <!-- System Status -->
+        <div class="glass-effect rounded-md border border-sea-green-800/20 mb-6 hover-lift">
+            <div class="bg-gradient-to-r from-sea-green-50 to-mint-green-50 rounded-t-2xl p-6 border-b border-sea-green-600">
+                <h5 class="text-xl font-bold text-slate-800 flex items-center">
+                    <i class="bi bi-cpu-fill text-sea-green-600 mr-3 text-2xl"></i>System Status & Analytics
+                </h5>
+            </div>
+            <div class="p-8">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+                    {% if model_info %}
+                    <div class="text-center p-6 bg-white/70 rounded-md border border-sea-green-100 hover-lift">
+                        <div class="text-3xl mb-2"><i class="bi bi-check-circle-fill text-mint-green-500"></i></div>
+                        <div class="text-xs font-bold text-slate-600 uppercase tracking-wide">Model Ready</div>
+                    </div>
+                    <div class="text-center p-6 bg-white/70 rounded-md border border-sea-green-100 hover-lift">
+                        <div class="text-3xl font-black gradient-text mb-2">{{ model_info.n_features }}</div>
+                        <div class="text-xs font-bold text-slate-600 uppercase tracking-wide">SAR Features</div>
+                    </div>
+                    <div class="text-center p-6 bg-white/70 rounded-md border border-sea-green-100 hover-lift">
+                        <div class="text-3xl font-black gradient-text mb-2">4</div>
+                        <div class="text-xs font-bold text-slate-600 uppercase tracking-wide">Risk Categories</div>
+                    </div>
+                    <div class="text-center p-6 bg-white/70 rounded-md border border-sea-green-100 hover-lift">
+    <div class="text-3xl mb-2">
+        <i class="bi bi-radar text-sea-green-600"></i>
+    </div>
+    <div class="text-xs font-bold text-slate-600 uppercase tracking-wide">SAR Data Source</div>
+</div>
+
+                    {% else %}
+                    <div class="text-center p-6 bg-white/70 rounded-md border border-red-100 hover-lift">
+                        <div class="text-3xl mb-2"><i class="bi bi-x-circle-fill text-red-500"></i></div>
+                        <div class="text-xs font-bold text-slate-600 uppercase tracking-wide">Model Offline</div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                {% if model_info %}
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm bg-green-50 p-8 rounded-md shadow-lg">
+    <!-- Model Type -->
+    <div class="bg-white/90 rounded-md p-6 shadow-md flex flex-col items-center text-center hover:shadow-xl hover:scale-[1.03] transition-all duration-300">
+        <div class="text-green-500 text-4xl mb-2">
+            <i class="bi bi-cpu"></i>
+        </div>
+        <!-- Title -->
+        <p class="font-extrabold text-slate-800 text-lg relative before:block before:absolute before:-bottom-1 before:left-1/2 before:w-12 before:h-1 before:bg-gradient-to-r before:from-green-400 before:to-green-600 before:-translate-x-1/2">
+            Model Type
+        </p>
+        <!-- Value -->
+        <p class="mt-2 text-base tracking-wide">
+            <span class="bg-green-100/70 text-green-800 font-semibold px-3 py-2 rounded-lg shadow-sm">
+                {{ model_info.model_type }}
+            </span>
+        </p>
+    </div>
+
+    <!-- Last Training -->
+    <div class="bg-white/90 rounded-md p-6 shadow-md flex flex-col items-center text-center hover:shadow-xl hover:scale-[1.03] transition-all duration-300">
+        <div class="text-green-500 text-4xl mb-2">
+            <i class="bi bi-clock-history"></i>
+        </div>
+        <p class="font-extrabold text-slate-800 text-lg relative before:block before:absolute before:-bottom-1 before:left-1/2 before:w-12 before:h-1 before:bg-gradient-to-r before:from-green-400 before:to-green-600 before:-translate-x-1/2">
+            Last Training
+        </p>
+        <p class="mt-2 text-base tracking-wide">
+            <span class="bg-green-100/70 text-green-800 font-semibold px-3 py-2 rounded-lg shadow-sm">
+                {{ model_info.training_date[:10] if model_info.training_date else 'Unknown' }}
+            </span>
+        </p>
+    </div>
+
+    <!-- Capabilities -->
+    <div class="bg-white/90 rounded-md p-6 shadow-md flex flex-col items-center text-center hover:shadow-xl hover:scale-[1.03] transition-all duration-300">
+        <div class="text-green-500 text-4xl mb-2">
+            <i class="bi bi-graph-up-arrow"></i>
+        </div>
+        <p class="font-extrabold text-slate-800 text-lg relative before:block before:absolute before:-bottom-1 before:left-1/2 before:w-12 before:h-1 before:bg-gradient-to-r before:from-green-400 before:to-green-600 before:-translate-x-1/2">
+            Capabilities
+        </p>
+        <p class="mt-2 text-base tracking-wide">
+            <span class="bg-green-100/70 text-green-800 font-semibold px-3 py-2 rounded-lg shadow-sm">
+                Multi-modal SAR Analysis
+            </span>
+        </p>
+    </div>
+</div>
+
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="glass-effect rounded-md border border-sea-green-800/20 mb-6 hover-lift">
+            <div class="bg-gradient-to-r from-mint-green-50 to-sea-green-50 rounded-t-2xl p-6 border-b border-mint-green-600">
+                <h5 class="text-xl font-bold text-slate-800 flex items-center">
+                    <i class="bi bi-lightbulb-fill text-mint-green-600 mr-3 text-2xl"></i>How It Works
+                </h5>
+            </div>
+            <div class="p-8">
+                <p class="text-lg text-slate-700 mb-6 font-medium leading-relaxed">Our advanced system analyzes Synthetic Aperture Radar (SAR) data to predict climate disaster risks including wildfires, floods, and urban heat events.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white/60 p-6 rounded-md border border-sea-green-100">
+                        <h6 class="font-bold text-slate-800 mb-4 flex items-center">
+                            <span class="text-2xl mr-2">📤</span> Data Input Options:
+                        </h6>
+                        <ul class="space-y-2 text-slate-600">
+                            <li class="flex items-start"><span class="text-sea-green-500 mr-2">●</span>Upload SAR images (JPG, PNG, TIF, TIFF)</li>
+                            <li class="flex items-start"><span class="text-sea-green-500 mr-2">●</span>Enter pre-extracted feature values</li>
+                            <li class="flex items-start"><span class="text-sea-green-500 mr-2">●</span>Select disaster type for specialized analysis</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white/60 p-6 rounded-md border border-mint-green-100">
+                        <h6 class="font-bold text-slate-800 mb-4 flex items-center">
+                            <span class="text-2xl mr-2">🧮</span> Feature Requirements:
+                        </h6>
+                        <ul class="space-y-2 text-slate-600">
+                            <li class="flex items-start"><span class="text-mint-green-500 mr-2">●</span>14 numerical values for manual input</li>
+                            <li class="flex items-start"><span class="text-mint-green-500 mr-2">●</span>Includes statistical, texture, and frequency features</li>
+                            <li class="flex items-start"><span class="text-mint-green-500 mr-2">●</span>Domain-specific risk indicators</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="mt-6 p-4 bg-slate-50 rounded-md border border-slate-200">
+                    <small class="text-slate-500 font-mono"><strong>Example Input:</strong> 156.5,45.2,89.1,255.0,178.3,0.85,0.92,2.1,8.5,12.4,8.9,1250.5,890.2,0.65</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Form -->
+        <div class="glass-effect rounded-md border border-sea-green-800/20 mb-6 hover-lift">
+            <div class="bg-gradient-to-r from-sea-green-50 to-mint-green-50 rounded-t-2xl p-6 border-b border-sea-green-600">
+                <h5 class="text-xl font-bold text-slate-800 flex items-center">
+                    <i class="bi bi-cloud-upload-fill text-sea-green-600 mr-3 text-2xl"></i>Data Analysis Portal
+                </h5>
+            </div>
+            <div class="p-8">
+                {% if message %}
+                <div class="alert {{ message_type }} mb-6 rounded-xl border-none p-4">
+                    {{ message | safe }}
+                </div>
+                {% endif %}
+                
+                <form action="/predict" method="POST" enctype="multipart/form-data" id="analysisForm">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label for="data_type" class="block text-sm font-bold text-slate-800 mb-3">
+                                <i class="bi bi-collection-fill mr-2 text-sea-green-600"></i>Disaster Type
+                            </label>
+                            <select class="w-full p-4 rounded-md border-2 border-sea-green-100 bg-white/80 focus:border-sea-green-400 focus:ring-4 focus:ring-sea-green-100 transition-all" id="data_type" name="data_type">
+                                <option value="forest">🔥 Forest Fire Risk Assessment</option>
+                                <option value="wetland">🌊 Wetland/Flood Risk Analysis</option>
+                                <option value="urban">🏙️ Urban Heat Island Detection</option>
+                            </select>
+                        </div>
+                        <div class="mb-6">
+                        <label for="image" class="block text-sm font-bold text-slate-800 mb-3">
+                            <i class="bi bi-camera-fill mr-2 text-mint-green-600"></i>Upload SAR Image
+                        </label>
+                        <input type="file" class="w-full p-4 rounded-xl border-2 border-mint-green-100 bg-white/80 focus:border-mint-green-400 focus:ring-4 focus:ring-mint-green-100 transition-all" id="image" name="image" accept=".jpg,.png,.tif,.tiff">
+                        <div class="mt-2 text-sm text-slate-500">
+                            <i class="bi bi-info-circle mr-1"></i>
+                            Supports high-resolution SAR imagery in multiple formats
+                        </div>
+                    </div>
+                    </div>
+
+
+                    <div class="mb-8">
+                        <label for="features" class="block text-sm font-bold text-slate-800 mb-3">
+                            <i class="bi bi-calculator-fill mr-2 text-sea-green-600"></i>Manual Feature Input
+                        </label>
+                        <textarea class="w-full p-4 rounded-xl border-2 border-sea-green-100 bg-white/80 focus:border-sea-green-400 focus:ring-4 focus:ring-sea-green-100 transition-all" id="features" name="features" rows="4" 
+                                placeholder="Enter 14 comma-separated numerical values representing SAR features..."></textarea>
+                        <div class="mt-2 text-sm text-slate-500">
+                            <i class="bi bi-lightbulb mr-1"></i>
+                            Alternative to image upload - provide pre-extracted SAR feature values
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="bg-gradient-to-r from-sea-green-500 to-mint-green-500 hover:from-sea-green-600 hover:to-mint-green-600 text-white font-bold py-4 px-8 rounded-xl text-lg shadow-lg hover:shadow-xl " id="analyzeBtn">
+                            <i class="bi bi-rocket-takeoff-fill mr-2"></i> 
+                            <span>Analyze Climate Risk</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Feature Information -->
+        <div class="glass-effect rounded-md border border-sea-green-800/20 mb-6 hover-lift">
+            <div class="bg-gradient-to-r from-mint-green-50 to-sea-green-50 rounded-t-2xl p-6 border-b border-mint-green-600">
+                <h5 class="text-xl font-bold text-slate-800 flex items-center">
+                    <i class="bi bi-graph-up-arrow text-mint-green-600 mr-3 text-2xl"></i>Feature Analysis Capabilities
+                </h5>
+            </div>
+            <div class="p-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white/70 rounded-md p-6 border border-mint-green-100 hover-lift">
+                        <h6 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+                            <i class="bi bi-tree-fill text-mint-green-600 mr-3"></i>Forest Fire Risk
+                        </h6>
+                        <ul class="space-y-3 text-slate-600">
+                            <li class="flex items-start"><span class="text-mint-green-500 text-sm mr-2 mt-1">●</span>Vegetation density from SAR backscatter</li>
+                            <li class="flex items-start"><span class="text-mint-green-500 text-sm mr-2 mt-1">●</span>Fuel load estimation via texture analysis</li>
+                            <li class="flex items-start"><span class="text-mint-green-500 text-sm mr-2 mt-1">●</span>Moisture content indicators</li>
+                            <li class="flex items-start"><span class="text-mint-green-500 text-sm mr-2 mt-1">●</span>Terrain slope and aspect factors</li>
+                            <li class="flex items-start"><span class="text-mint-green-500 text-sm mr-2 mt-1">●</span>Historical fire pattern analysis</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white/70 rounded-md p-6 border border-sea-green-100 hover-lift">
+                        <h6 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+                            <i class="bi bi-water text-sea-green-600 mr-3"></i>Flood Risk Assessment
+                        </h6>
+                        <ul class="space-y-3 text-slate-600">
+                            <li class="flex items-start"><span class="text-sea-green-500 text-sm mr-2 mt-1">●</span>Surface water coverage mapping</li>
+                            <li class="flex items-start"><span class="text-sea-green-500 text-sm mr-2 mt-1">●</span>Soil moisture penetration depth</li>
+                            <li class="flex items-start"><span class="text-sea-green-500 text-sm mr-2 mt-1">●</span>Drainage pattern identification</li>
+                            <li class="flex items-start"><span class="text-sea-green-500 text-sm mr-2 mt-1">●</span>Topographic vulnerability analysis</li>
+                            <li class="flex items-start"><span class="text-sea-green-500 text-sm mr-2 mt-1">●</span>Precipitation accumulation zones</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white/70 rounded-md p-6 border border-yellow-100 hover-lift">
+                        <h6 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+                            <i class="bi bi-thermometer-sun text-yellow-500 mr-3"></i>Urban Heat Islands
+                        </h6>
+                        <ul class="space-y-3 text-slate-600">
+                            <li class="flex items-start"><span class="text-yellow-500 text-sm mr-2 mt-1">●</span>Built-up area density measurement</li>
+                            <li class="flex items-start"><span class="text-yellow-500 text-sm mr-2 mt-1">●</span>Surface temperature estimation</li>
+                            <li class="flex items-start"><span class="text-yellow-500 text-sm mr-2 mt-1">●</span>Thermal mass identification</li>
+                            <li class="flex items-start"><span class="text-yellow-500 text-sm mr-2 mt-1">●</span>Vegetation cover analysis</li>
+                            <li class="flex items-start"><span class="text-yellow-500 text-sm mr-2 mt-1">●</span>Heat retention characteristics</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-md p-6 border-t-4 border-t-yellow-400">
+            <h6 class="text-lg font-bold text-yellow-700 mb-4 flex items-center">
+                <i class="bi bi-shield-exclamation mr-2"></i>Important Disclaimer
+            </h6>
+            <p class="text-yellow-800 text-sm leading-relaxed font-medium">This system provides research-grade climate disaster risk predictions using advanced SAR data analysis and machine learning techniques. Results should complement, not replace, official meteorological and emergency management guidance. Always follow directives from local authorities during disaster events and emergency situations.</p>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Enhanced client-side validation with better UX
+        const form = document.getElementById('analysisForm');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const originalBtnContent = analyzeBtn.innerHTML;
+
+        form.addEventListener('submit', function(e) {
+            const image = document.getElementById('image').files[0];
+            const features = document.getElementById('features').value.trim();
+            
+            // Validation
+            if (!image && !features) {
+                e.preventDefault();
+                showAlert('Please upload a SAR image or enter feature values.', 'warning');
+                return;
+            }
+            
+            if (features) {
+                const values = features.split(',').map(val => val.trim());
+                if (values.length !== 14) {
+                    e.preventDefault();
+                    showAlert('Please enter exactly 14 comma-separated values for manual input.', 'danger');
+                    return;
+                }
+                const allValid = values.every(val => !isNaN(parseFloat(val)) && isFinite(val));
+                if (!allValid) {
+                    e.preventDefault();
+                    showAlert('All manual input values must be valid numbers.', 'danger');
+                    return;
+                }
+            }
+            
+            // Show loading state
+            analyzeBtn.disabled = true;
+            analyzeBtn.innerHTML = '<i class="bi bi-arrow-repeat animate-spin mr-2"></i>Processing SAR Data...';
+            analyzeBtn.className = 'bg-gradient-to-r from-slate-400 to-slate-500 text-white font-bold py-4 px-8 rounded-xl text-lg shadow-lg';
+            
+            // Re-enable button after 30 seconds as fallback
+            setTimeout(() => {
+                analyzeBtn.disabled = false;
+                analyzeBtn.innerHTML = originalBtnContent;
+                analyzeBtn.className = 'bg-gradient-to-r from-sea-green-500 to-mint-green-500 hover:from-sea-green-600 hover:to-mint-green-600 text-white font-bold py-4 px-8 rounded-xl text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all';
+            }, 30000);
+        });
+
+        function showAlert(message, type = 'info') {
+            const alertContainer = document.createElement('div');
+            let bgClass = 'bg-blue-50 border-blue-200 text-blue-800';
+            if (type === 'warning') bgClass = 'bg-yellow-50 border-yellow-200 text-yellow-800';
+            if (type === 'danger') bgClass = 'bg-red-50 border-red-200 text-red-800';
+            if (type === 'success') bgClass = 'bg-green-50 border-green-200 text-green-800';
+            
+            alertContainer.className = `${bgClass} border-2 rounded-xl p-4 mb-4 flex items-center justify-between`;
+            alertContainer.innerHTML = `
+                <span>${message}</span>
+                <button type="button" class="ml-4 text-current hover:opacity-70" onclick="this.parentElement.remove()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            `;
+            
+            const form = document.getElementById('analysisForm');
+            form.parentNode.insertBefore(alertContainer, form);
+            
+            // Auto dismiss after 5 seconds
+            setTimeout(() => {
+                if (alertContainer.parentNode) {
+                    alertContainer.remove();
+                }
+            }, 5000);
+        }
+
+        // Enhanced file upload feedback
+        document.getElementById('image').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const fileSize = (file.size / 1024 / 1024).toFixed(2);
+                const fileInfo = document.createElement('div');
+                fileInfo.className = 'mt-2 text-sm text-mint-green-600 font-medium file-info';
+                fileInfo.innerHTML = `<i class="bi bi-check-circle mr-1"></i>Selected: ${file.name} (${fileSize} MB)`;
+                
+                // Remove previous file info
+                const existingInfo = e.target.parentNode.querySelector('.file-info');
+                if (existingInfo) existingInfo.remove();
+                
+                e.target.parentNode.appendChild(fileInfo);
+            }
+        });
+
+        // Feature input helper
+        document.getElementById('features').addEventListener('input', function(e) {
+            const values = e.target.value.split(',');
+            const validCount = values.filter(val => val.trim() && !isNaN(parseFloat(val.trim()))).length;
+            
+            let helperText = document.querySelector('.feature-helper');
+            if (!helperText) {
+                helperText = document.createElement('div');
+                helperText.className = 'feature-helper mt-2 text-sm font-medium';
+                e.target.parentNode.appendChild(helperText);
+            }
+            
+            if (validCount === 0) {
+                helperText.innerHTML = '<i class="bi bi-info-circle mr-1"></i>Enter numerical values separated by commas';
+                helperText.className = 'feature-helper mt-2 text-sm font-medium text-slate-500';
+            } else if (validCount < 14) {
+                helperText.innerHTML = `<i class="bi bi-exclamation-triangle mr-1"></i>Entered ${validCount}/14 required values`;
+                helperText.className = 'feature-helper mt-2 text-sm font-medium text-yellow-600';
+            } else if (validCount === 14) {
+                helperText.innerHTML = '<i class="bi bi-check-circle mr-1"></i>All 14 values entered correctly';
+                helperText.className = 'feature-helper mt-2 text-sm font-medium text-mint-green-600';
+            } else {
+                helperText.innerHTML = `<i class="bi bi-x-circle mr-1"></i>Too many values (${validCount}/14)`;
+                helperText.className = 'feature-helper mt-2 text-sm font-medium text-red-600';
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+

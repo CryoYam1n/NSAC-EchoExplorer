@@ -1,0 +1,38 @@
+{
+  "model_type": "Gradient Boosting",
+  "feature_names": [
+    "mean_intensity",
+    "std_intensity",
+    "min_intensity",
+    "max_intensity",
+    "median_intensity",
+    "glcm_homogeneity",
+    "glcm_energy",
+    "glcm_entropy",
+    "glcm_contrast",
+    "glcm_correlation",
+    "gradient_mean",
+    "gradient_std",
+    "fft_mean",
+    "fft_std",
+    "domain_specific_feature"
+  ],
+  "class_names": [
+    "Low Risk",
+    "Flood Risk",
+    "Heat Risk"
+  ],
+  "n_features": 15,
+  "n_classes": 3,
+  "training_date": "2025-09-18T23:52:04.280561",
+  "class_weights": [
+    0.43358395989974935,
+    2.0595238095238093,
+    4.805555555555555
+  ],
+  "label_mapping": {
+    "0": "Low Risk",
+    "2": "Flood Risk",
+    "3": "Heat Risk"
+  }
+}
