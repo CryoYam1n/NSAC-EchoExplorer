@@ -1,4 +1,3 @@
-# Refactored data_processor.py
 import numpy as np
 import cv2
 import os
@@ -20,14 +19,14 @@ class SARDataProcessor:
     def __init__(self, base_path="E:/Nasa Space Apps Challenge- 2025/Echo Explorer/NASA SAR Data/"):
         self.base_path = Path(base_path)
         
-        # Updated paths based on your actual data structure
+        
         self.forest_fire_path = self.base_path / "forest fire(LBA-ECO LC-35 GOES Imager)/data"
         self.flood_path1 = self.base_path / "WaterBodies Dataset(flood)/data"
         self.flood_path2 = self.base_path / "Water Bodies Dataset/Images"
         self.urban_heat_path = self.base_path / "urban heat island data"
         self.urban_data_path = self.base_path / "urban_data"
         
-        # Feature extraction parameters
+        
         self.image_size = (256, 256)
         self.features = []
         self.labels = []
@@ -134,7 +133,7 @@ class SARDataProcessor:
                         img = cv2.resize(img, self.image_size)
                         features = self.extract_sar_features(img, 'forest')
                         forest_features.append(features)
-                        forest_labels.append(2)  # Fire class, based on dataset metadata (source folder)
+                        forest_labels.append(2)  
                     
                 except Exception as e:
                     print(f"Error processing {file_path}: {e}")
@@ -171,7 +170,7 @@ class SARDataProcessor:
                         img = cv2.resize(img, self.image_size)
                         features = self.extract_sar_features(img, 'wetland')
                         flood_features.append(features)
-                        flood_labels.append(0)  # Flood class, based on dataset metadata (source folder)
+                        flood_labels.append(0)  
                         
                     except Exception as e:
                         print(f"Error processing {img_file}: {e}")
@@ -185,7 +184,7 @@ class SARDataProcessor:
         urban_features = []
         urban_labels = []
         
-        # Load from urban heat island dataset (GeoTIFF for urban heat features)
+        
         if self.urban_heat_path.exists():
             tif_files = list(self.urban_heat_path.glob("*.tif")) + list(self.urban_heat_path.glob("*.tiff"))
             
@@ -203,12 +202,12 @@ class SARDataProcessor:
                     img = cv2.resize(img, self.image_size)
                     features = self.extract_sar_features(img, 'urban')
                     urban_features.append(features)
-                    urban_labels.append(1)  # Urban Heat class, based on dataset metadata
+                    urban_labels.append(1)  
                     
                 except Exception as e:
                     print(f"Error processing {tif_file}: {e}")
         
-        # Load from urban classification dataset for urban heat and deforestation
+        
         if self.urban_data_path.exists():
             urban_categories = ['urban', 'agri', 'barrenland', 'grassland']
             
@@ -233,11 +232,11 @@ class SARDataProcessor:
                                     features = self.extract_sar_features(img, 'urban')
                                     urban_features.append(features)
                                     
-                                    # Label based on category metadata
+                                   
                                     if category == 'urban':
-                                        urban_labels.append(1)  # Urban Heat
+                                        urban_labels.append(1)  
                                     else:
-                                        urban_labels.append(3)  # Deforestation (land change indicators)
+                                        urban_labels.append(3)  
                                 
                                 except Exception as e:
                                     print(f"Error processing {png_file}: {e}")
