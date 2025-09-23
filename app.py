@@ -1,4 +1,3 @@
-# Refactored app.py
 import numpy as np
 from flask import Flask, request, render_template, jsonify
 import pickle
@@ -10,10 +9,10 @@ import cv2
 from werkzeug.utils import secure_filename
 import os
 
-# Import enhanced SARDataProcessor from the updated data_processor.py
+
 from data_processor import SARDataProcessor
 
-# Setup logging
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -143,7 +142,7 @@ class EnhancedClimateDisasterApp:
             class_names = self.metadata.get('class_names', ['Flood Risk', 'Urban Heat Risk', 'Fire Risk', 'Deforestation Risk'])
             label_mapping = self.metadata.get('label_mapping', {})
             
-            # Improved mapping using model.classes_ if available
+            
             class_to_name = {}
             if hasattr(self.model, 'classes_'):
                 for idx, label in enumerate(self.model.classes_):
@@ -169,7 +168,7 @@ class EnhancedClimateDisasterApp:
             if hasattr(self.model, 'predict_proba'):
                 try:
                     probabilities = self.model.predict_proba(features_scaled)[0]
-                    # Normalize probabilities to ensure they sum to 1
+                    
                     prob_sum = np.sum(probabilities)
                     if prob_sum > 0:
                         probabilities = probabilities / prob_sum
@@ -198,7 +197,7 @@ class EnhancedClimateDisasterApp:
             logger.error(f"Prediction error: {str(e)}")
             return None
 
-# Initialize the enhanced application
+
 climate_app = EnhancedClimateDisasterApp()
 
 @app.route('/')
