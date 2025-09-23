@@ -148,7 +148,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap');
         
         /* ================================
-   Global Styles - Professional Enhancement
+   Styles 
 ================================ */
 * {
     scroll-behavior: smooth;
@@ -180,12 +180,12 @@ body {
     line-height: 1.6;
 }
 
-/* Enhanced Professional Dark Theme */
+/* Dark Theme */
 .dark body {
     background: 
         
         
-        /* Cosmic gradient background */
+        /* background */
         linear-gradient(135deg, #0b0d1f 0%, #10132f 50%, #0c0f1f 100%);
     color: #f8fafc;
 }
@@ -195,7 +195,7 @@ body {
     z-index: -5;
 }
 
-/* Professional Star Field */
+/* Star Field */
 .star-field {
     position: fixed;
     top: 0;
@@ -235,7 +235,7 @@ body {
 }
 
 /* ================================
-   Enhanced Glass Effect - Professional
+   Glass Effect
 ================================ */
 .glass-effect {
     backdrop-filter: blur(24px) saturate(180%);
@@ -305,7 +305,7 @@ body {
 }
 
 /* ================================
-   Enhanced Professional Buttons
+   Buttons
 ================================ */
 button, a {
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -344,7 +344,7 @@ button, a {
 }
 
 /* ================================
-   Professional Theme Toggle
+   Theme Toggle
 ================================ */
 .theme-toggle {
     position: fixed;
@@ -392,7 +392,7 @@ button, a {
 }
 
 /* ================================
-   Enhanced Professional Hover Effects
+   Hover Effects
 ================================ */
 .hover-lift {
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -415,7 +415,7 @@ button, a {
 }
 
 /* ================================
-   Section Spacing & Professional Animation
+   Section Spacing & Animation
 ================================ */
 .section-spacing {
     padding: 5rem 0;
@@ -433,7 +433,7 @@ button, a {
 }
 
 /* ================================
-   Professional Celestial Effects
+   Celestial Effects
 ================================ */
 .celestial-premium {
     animation: float 12s ease-in-out infinite;
@@ -454,7 +454,7 @@ button, a {
 }
 
 /* ================================
-   Professional Dark Mode Enhancements
+   Dark Mode Enhancements
 ================================ */
 .dark .text-gray-900 { color: #f8fafc !important; }
 .dark .text-gray-800 { color: #e2e8f0 !important; }
@@ -486,7 +486,7 @@ button, a {
 }
 
 /* ================================
-   Professional Card Enhancements
+    Card Enhancements
 ================================ */
 .professional-card {
     background: rgba(255, 255, 255, 0.9);
@@ -515,7 +515,7 @@ button, a {
 }
 
 /* ================================
-   Professional Animations
+    Animations
 ================================ */
 @keyframes float {
     0%, 100% { transform: translateY(0); }
@@ -538,7 +538,7 @@ button, a {
 }
 
 /* ================================
-   Professional Responsive Design
+    Responsive Design
 ================================ */
 @media (max-width: 768px) {
     .hover-lift:hover {
@@ -578,7 +578,7 @@ button, a {
 }
 
 /* ================================
-   Professional Scrollbar
+    Scrollbar
 ================================ */
 ::-webkit-scrollbar {
     width: 8px;
@@ -610,7 +610,7 @@ button, a {
 }
 
 /* ================================
-   Professional Interactive Elements
+    Interactive Elements
 ================================ */
 .interactive-element {
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -645,7 +645,7 @@ button, a {
         <i class="fas fa-sun theme-icon" id="themeIcon"></i>
     </div>
     
-    <!-- Professional background elements -->
+    <!--  background elements -->
     <div class="fixed inset-0 pointer-events-none z-0">
         <div class="absolute top-10 left-10 w-22 h-22 bg-teal-200 rounded-full opacity-10 blur-xl animate-pulse"></div>
         <div class="absolute top-1/3 right-20 w-24 h-24 bg-emerald-200 rounded-full opacity-15 blur-xl animate-pulse" style="animation-delay: 2s"></div>
@@ -654,11 +654,11 @@ button, a {
     </div>
     
 <div class="max-w-7xl mx-auto px-4 py-8">
-<!-- Professional Animated Background -->
+<!--  Animated Background -->
 <div class="star-field"></div>
 
 <div class="fixed inset-0 -z-20 overflow-hidden">
-  <!-- Floating Celestial Objects with Professional Styling -->
+  
   <div class="absolute inset-0 opacity-60">
     <img src="{{ url_for('static', filename='assets/cursor2.png') }}" 
          alt="Celestial object" 
@@ -860,7 +860,7 @@ button, a {
             <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-emerald-400/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
         </div>
 
-        <!-- Enhanced Interactive Description -->
+        <!-- Interactive Description -->
         <p class="text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-12 leading-relaxed max-w-3xl mx-auto text-center animate-fade-in relative
                   hover:scale-105 transition-transform duration-300 cursor-default">
             Journey through the cosmos with our interactive platform. 
@@ -875,7 +875,7 @@ button, a {
             and real-time data.
         </p>
 
-        <!-- Enhanced Interactive Button Group -->
+        <!-- Interactive Button Group -->
         <!-- Interactive Flow Steps -->
         <div class="flex flex-col md:flex-row justify-between items-center gap-3 relative">
             
@@ -1015,7 +1015,7 @@ button, a {
     </div>
 </section>
 
-<!-- Professional Dashboard Grid -->
+<!--  Dashboard Grid -->
 <section class="section-spacing">
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 mb-16">
 
@@ -1045,7 +1045,7 @@ button, a {
           <p class="text-xs text-gray-200">Live Earth Observation Feed</p>
         </div>
       </div>
-      <!-- Interactive Button -->
+     
       <button onclick="location.href='{{ url_for('static', filename='GSI.html') }}'"
               class="w-full relative group/button btn-primary rounded-xl">
           <div class="flex items-center justify-center space-x-3">
@@ -1082,7 +1082,7 @@ button, a {
           <p class="text-xs text-gray-200">Interactive Planetary Visualization</p>
         </div>
       </div>
-      <!-- Interactive Button -->
+      
       <button onclick="location.href='{{ url_for('static', filename='CDRP.html') }}'"
               class="w-full relative group/button btn-primary rounded-xl">
           <div class="flex items-center justify-center space-x-3">
@@ -1150,7 +1150,7 @@ button, a {
   </div>
 </section>
 
-<!-- Professional SAR Section Header -->
+<!--  SAR Section Header -->
 <div id="sar" class="relative professional-card p-8 mb-8 text-center hover-lift overflow-hidden">
     <!-- Background image -->
     <div class="absolute inset-0">
@@ -1176,7 +1176,7 @@ button, a {
     </div>
 </div>
 
-<!-- Professional System Status -->
+<!--  System Status -->
 <div class="professional-card border border-teal-200/50 dark:border-slate-600/50 mb-16 hover-lift">
     <div class="bg-gradient-to-r from-teal-50 to-emerald-50 dark:from-slate-800 dark:to-slate-700 rounded-t-xl p-6 border-b border-teal-200 dark:border-slate-600">
         <h5 class="text-xl font-bold text-slate-800 dark:text-slate-200 flex items-center">
@@ -1388,7 +1388,7 @@ button, a {
     </div>
 </div>
 
-<!-- Professional Instructions -->
+<!--  Instructions -->
 <div class="professional-card border border-teal-200/50 dark:border-slate-600/50 mb-8 hover-lift">
     <div class="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-slate-800 dark:to-slate-700 rounded-t-xl p-6 border-b border-emerald-200 dark:border-slate-600">
         <h5 class="text-xl font-bold text-slate-800 dark:text-slate-200 flex items-center">
@@ -1427,7 +1427,7 @@ button, a {
     </div>
 </div>
 
-<!-- Professional Input Form -->
+<!--  Input Form -->
 <div class="professional-card border border-teal-200/50 dark:border-slate-600/50 mb-8 hover-lift">
     <div class="bg-gradient-to-r from-teal-50 to-emerald-50 dark:from-slate-800 dark:to-slate-700 rounded-t-xl p-6 border-b border-teal-200 dark:border-slate-600">
         <h5 class="text-xl font-bold text-slate-800 dark:text-slate-200 flex items-center">
@@ -1539,7 +1539,7 @@ button, a {
     </div>
 </div>
 
-<!-- Professional Feature Information -->
+<!--  Feature Information -->
 <div class="relative professional-card border border-teal-200/50 dark:border-slate-600/50 mb-8 hover-lift overflow-hidden">
     <!-- Background Image -->
     <div class="absolute inset-0 opacity-5 dark:opacity-10 pointer-events-none">
@@ -1607,7 +1607,7 @@ button, a {
     </div>
 </div>
 
-<!-- Professional Disclaimer -->
+<!--  Disclaimer -->
 <div class="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-2 border-yellow-200 dark:border-yellow-600/30 rounded-xl p-6 border-t-4 border-t-yellow-400 dark:border-t-yellow-500 professional-shadow mb-8">
     <h6 class="text-lg font-bold text-yellow-800 dark:text-yellow-300 mb-4 flex items-center">
         <i class="bi bi-shield-exclamation mr-2"></i>Important Disclaimer
@@ -1615,7 +1615,7 @@ button, a {
     <p class="text-yellow-800 dark:text-yellow-200 text-sm leading-relaxed font-medium">This system provides research-grade climate disaster risk predictions using advanced SAR data analysis and machine learning techniques. Results should complement, not replace, official meteorological and emergency management guidance. Always follow directives from local authorities during disaster events and emergency situations.</p>
 </div>
 
-<!-- Professional News Ticker -->
+<!-- News Ticker -->
 <div id="news" class="professional-card bg-teal-50 dark:bg-slate-800 rounded-xl p-6 my-12 overflow-hidden relative professional-shadow">
     <!-- Header -->
     <div class="flex items-center gap-3 mb-4">
@@ -1627,7 +1627,7 @@ button, a {
         </div>
     </div>
 
-    <!-- Professional Ticker -->
+    <!-- Ticker -->
     <div class="overflow-hidden">
         <div class="flex whitespace-nowrap animate-ticker-scroll text-sm sm:text-base">
             <!-- Item 1 -->
@@ -1654,7 +1654,7 @@ button, a {
     </div>
 </div>
 
-<!-- Professional Enhanced Cards Carousel Section -->
+<!-- Enhanced Cards Carousel Section -->
 <section id="mission" class="section-spacing">
     <!-- Section Header -->
     <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-16">
@@ -1668,7 +1668,7 @@ button, a {
         </a>
     </div>
 
-    <!-- Professional Carousel -->
+    <!-- Carousel -->
     <div class="relative">
         <!-- Carousel Navigation -->
         <div class="absolute -left-6 top-1/2 -translate-y-1/2 z-10">
@@ -2122,7 +2122,7 @@ button, a {
                 }
             }
             
-            // Professional loading state
+            //  loading state
             analyzeBtn.disabled = true;
             analyzeBtn.innerHTML = '<i class="bi bi-arrow-repeat animate-spin mr-2"></i>Processing SAR Data...';
             analyzeBtn.className = 'bg-gradient-to-r from-slate-400 to-slate-500 text-white font-semibold px-10 py-4 rounded-xl text-lg professional-shadow cursor-not-allowed';
@@ -2135,7 +2135,7 @@ button, a {
             }, 30000);
         });
 
-        // Professional alert system
+        //  alert system
         function showAlert(message, type = 'info') {
             const alertContainer = document.createElement('div');
             let bgClass = 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700 text-blue-800 dark:text-blue-300';
@@ -2162,7 +2162,7 @@ button, a {
             }, 5000);
         }
 
-        // Enhanced file upload feedback
+        //  file upload feedback
         document.getElementById('image').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -2179,7 +2179,7 @@ button, a {
             }
         });
 
-        // Professional feature input helper
+        //  feature input helper
         document.getElementById('features').addEventListener('input', function(e) {
             const values = e.target.value.split(',');
             const validCount = values.filter(val => val.trim() && !isNaN(parseFloat(val.trim()))).length;
@@ -2206,7 +2206,7 @@ button, a {
             }
         });
 
-        // Professional carousel functionality
+        // carousel functionality
         const carousel = document.querySelector('.flex.gap-8');
         const prevBtn = document.querySelector('.carousel-prev');
         const nextBtn = document.querySelector('.carousel-next');
@@ -2244,7 +2244,7 @@ button, a {
             prevBtn.addEventListener('click', goToPrev);
             nextBtn.addEventListener('click', goToNext);
 
-            // Professional touch/swipe support
+            // touch/swipe support
             let touchStartX = 0;
             let touchStartY = 0;
             
@@ -2291,7 +2291,7 @@ button, a {
             });
         }
 
-        // Professional particles.js initialization
+        // particles.js initialization
         if (typeof particlesJS !== 'undefined') {
             particlesJS('particles-js', {
                 particles: {
@@ -2331,7 +2331,7 @@ button, a {
         }
     });
 
-    // Professional Theme Toggle Functionality
+    // Theme Toggle Functionality
     function initializeTheme() {
         const savedTheme = localStorage.getItem('theme') || 'light';
         const html = document.documentElement;
@@ -2361,7 +2361,7 @@ button, a {
         }
     }
 
-    // Professional scroll animations
+    // scroll animations
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
@@ -2375,12 +2375,12 @@ button, a {
         });
     }, observerOptions);
 
-    // Observe all sections with premium animations
+    
     document.querySelectorAll('.section-premium').forEach(section => {
         observer.observe(section);
     });
 
-    // Professional grid flow animation
+    // grid flow animation
     const style = document.createElement('style');
     style.textContent = `
         @keyframes grid-flow {
