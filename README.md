@@ -38,26 +38,209 @@ Echo Explorer is an advanced web application developed for the NASA Space Apps C
 - **Interactive Visualization**: Modern web interface with professional data presentation
 - **Comprehensive Feature Extraction**: 15+ specialized SAR features for enhanced prediction accuracy
 
-### 📂 SAR Data Sets  
 
-The following datasets from **NASA Earthdata** were referenced for the project:  
-- **BA-ECO LC-35 GOES Imager Active Fire Detection Data, South America: 2000-2005:** https://data.nasa.gov/
-- **ABoVE: Synthesis of Burned and Unburned Forest Site Data, Alaska and Canada, 1983–2016- Forest Fire / Wildfire risk analysis:**  https://data.ornldaac.earthdata.nasa.gov/protected/bundle/ABoVE_Plot_Data_Burned_Sites_1744.zip
-- **Global Urban Heat Island (UHI) Data Set, 2013:** [Link](https://search.earthdata.nasa.gov/search/granules?p=C3550192492-ESDIS)  
-- **Water Bodies Data Set:** https://data.ornldaac.earthdata.nasa.gov/protected/bundle/IMERG_Precip_Canada_Alaska_2097.zip source:https://data.nasa.gov/
-- **IMERG_Precip Canada Alaska Water Bodies Data Set:** https://data.nasa.gov/
-- URL: https://data.ornldaac.earthdata.nasa.gov/protected/bundle/FEWS_precip_711.zip
+---
 
-Data Information (ZIP)
-URL: https://data.ornldaac.earthdata.nasa.gov/protected/bundle/IMERG_Precip_Canada_Alaska_2097.zip
+## 📊NASA Dataset Categories
 
-Dataset description:
-This dataset is a modification to the Integrated Multi-satellitE Retrievals for GPM (IMERG) Final Run microwave-only, daily precipitation Version 06 data. It provides bias-corrected IMERG...
-Source: ABoVE: Bias-Corrected IMERG Monthly Precipitation for Alaska and Canada, 2000-2020
+### 1. 🌊 Flood & Drought Analysis
+
+#### Precipitation Data
+- **Dataset:** ABoVE: Bias-Corrected IMERG Monthly Precipitation for Alaska and Canada (2000-2020)
+- **Download Link:** [FEWS_precip_711.zip](https://data.ornldaac.earthdata.nasa.gov/protected/bundle/FEWS_precip_711.zip)
+- **Local Path:** `Echo Explorer/NASA SAR Data/Floods & Draught/FEWS_precip_711`
+- **Format:** `.img` files
+- **Description:** Bias-corrected IMERG precipitation data (daily & monthly)
+- **Use Case:** Flood and drought risk prediction
+
+#### Water Bodies Monitoring
+- **Dataset:** IMERG Precipitation Canada Alaska Water Bodies
+- **Download Link:** [IMERG_Precip_Canada_Alaska_2097.zip](https://data.ornldaac.earthdata.nasa.gov/protected/bundle/IMERG_Precip_Canada_Alaska_2097.zip)
+- **Local Paths:** 
+  - `Echo Explorer/NASA SAR Data/WaterBodies Dataset(flood)/data`
+  - `Echo Explorer/NASA SAR Data/Water Bodies Dataset`
+- **Format:** `.if` files, `.jpg` images
+- **Description:** Water body detection and monitoring dataset
+- **Use Case:** Flood risk assessment and water resource management
+
+#### Soil Moisture Data
+- **Dataset:** SMAP/Sentinel-1 L2 Radiometer/Radar 30-Second Scene 3 km EASE-Grid Soil Moisture V003
+- **Local Path:** `Echo Explorer/NASA SAR Data/SMAPSentinel-1 L2 RadiometerRadar 30-Second Scene 3 km EASE-Grid Soil Moisture V003`
+- **Format:** `.h5` files (e.g., `SMAP_L2_SM_SP_1AIWDV_20250924T142712_20250923T135925_118W39N_R19240_001.h5`)
+- **Description:** Combined SMAP and Sentinel-1 soil moisture measurements
+- **Use Case:** Drought monitoring and flood risk assessment
+
+#### GRACE Land Data Assimilation
+- **Dataset:** GRACEDADM CLSM025GL 7D
+- **Local Path:** `Echo Explorer/NASA SAR Data/Floods & Draught/GRACEDADM_CLSM025GL_7D`
+- **Format:** `.nc4` files (e.g., `GRACEDADM_CLSM025GL_7D.A20231225.030.nc4`)
+- **Additional:** `subset_GRACEDADM_CLSM025GL_7D_3.0_20251001_061142_.txt` (contains ~1100 downloadable file links)
+- **Format:** `.bsq` files (e.g., `africa_gba2000-01.bsq`)
+- **Description:** Land surface data assimilation system providing essential land-related information
+- **Use Case:** Provides critical land information for flood and drought risk modeling when combined with climate and weather data
+
+#### Flood & Cyclone SAR Imagery
+- **Dataset:** SENTINEL-1B Single Polarization GRD High Resolution
+- **Local Path:** `Echo Explorer/NASA SAR Data/Flood & Cyclone (SENTINEL-1B_SINGLE_POL_METADATA_GRD_HIGH_RES)`
+- **Format:** `.tiff` files (5 files)
+- **Description:** Sentinel-1B SAR imagery for flood and cyclone detection
+- **Use Case:** Real-time flood extent mapping and cyclone impact assessment
+
+#### Comparative Analysis Data
+- **Local Path:** `Echo Explorer/NASA SAR Data/Floods & Draught/comp`
+- **Format:** 4 CSV files
+- **Description:** Comparative analysis datasets for flood and drought studies
+
+---
+
+### 2. 🔥 Forest Fire & Deforestation
+
+#### South America Fire Data
+- **Dataset:** LBA-ECO LC-35 GOES Imager Active Fire Detection Data, South America (2000-2005)
+- **Source:** https://data.nasa.gov/
+- **Local Path:** `Echo Explorer/NASA SAR Data/forest fire(LBA-ECO LC-35 GOES Imager)/data`
+- **Format:** `.filt` files (e.g., `f20000011245.samer.v60.g8.filt`)
+- **Description:** GOES satellite active fire detection data
+- **Use Case:** Historical fire occurrence and frequency analysis
+
+#### MODIS Fire Data - South America
+- **Dataset:** LBA-ECO LC-39 MODIS Active Fire and Frequency Data (2000-2007)
+- **Download Link:** [LC39_MODIS_Fire_SA_1186.zip](https://data.ornldaac.earthdata.nasa.gov/protected/bundle/LC39_MODIS_Fire_SA_1186.zip)
+- **Local Path:** `Echo Explorer/NASA SAR Data/LC39_MODIS_Fire_SA_1186/data`
+- **Format:** `.dbf`, `.prj`, `.sbn`, `.sbx`, `.shp`, `.shx`, `.tif`, `.xml` files
+- **Examples:** 
+  - `sa_2000_2001_terra_subset.shp`
+  - `sa0001_terra_neighborhood_variety.tif`
+- **Description:** MODIS-based active fire detection and annual fire frequency estimates
+- **Use Case:** Forest fire occurrence and frequency prediction
+
+#### Global Fire Atlas
+- **Dataset:** Global Fire Atlas with Characteristics of Individual Fires (2003-2016)
+- **Download Link:** [CMS_Global_Fire_Atlas_1642.zip](https://data.ornldaac.earthdata.nasa.gov/protected/bundle/CMS_Global_Fire_Atlas_1642.zip)
+- **Local Paths:**
+  - `Echo Explorer/NASA SAR Data/Global_fire_atlas_V1_ignitions_2016`
+  - `Echo Explorer/NASA SAR Data/CMS_Global_Fire_Atlas_1642/data`
+- **Format:** `.dbf`, `.prj`, `.shp`, `.shx`, `.tif` files
+- **Description:** Global dataset tracking ignition timing, fire size, duration, and expansion
+- **Use Case:** Global forest fire spread and dynamics analysis
+
+#### Burned Forest Site Data
+- **Dataset:** ABoVE: Synthesis of Burned and Unburned Forest Site Data, Alaska and Canada (1983–2016)
+- **Download Link:** [ABoVE_Plot_Data_Burned_Sites_1744.zip](https://data.ornldaac.earthdata.nasa.gov/protected/bundle/ABoVE_Plot_Data_Burned_Sites_1744.zip)
+- **Description:** Long-term forest fire impact analysis
+- **Use Case:** Forest fire risk analysis and vegetation recovery studies
+
+---
+
+### 3. 🌡️ Urban Heat Island (UHI)
+
+#### Global UHI Dataset
+- **Dataset:** Global Urban Heat Island (UHI) Data Set, 2013
+- **Access Link:** [Global Urban Heat Island (UHI) Data Set](https://search.earthdata.nasa.gov/search/granules?p=C3550192492-ESDIS)
+- **Local Paths:**
+  - `Echo Explorer/NASA SAR Data/urban heat island`
+  - `Echo Explorer/NASA SAR Data/urban heat island data`
+- **Format:** `.tif`, `.aux.xml`, `.ovr` files
+- **Examples:**
+  - `Summer_UHI_yearly_pixel_2003.tif`
+  - `Summer_UHI_yearly_pixel_2006.tif`
+  - `TrainArea_001.tif`
+- **Description:** Multi-year summer urban heat island intensity data
+- **Use Case:** Urban heat stress analysis and mitigation planning
+
+#### UHI Shapefile Datasets
+- **Local Paths:**
+  - `Echo Explorer/NASA SAR Data/sdei-global-uhi-2013`
+  - `Echo Explorer/NASA SAR Data/sdei-yceo-sfc-uhi-v4-urban-cluster-means-shp`
+- **Format:** `.CPG`, `.dbf`, `.prj`, `.shp`, `.shx`, `.sbx`, `.xml` files
+- **Description:** Global and urban cluster UHI spatial datasets
+- **Use Case:** Urban planning and heat vulnerability mapping
+
+---
+
+### 4. 🌀 Cyclone / Hurricane
+
+#### CERES Atmospheric Data
+- **Dataset:** CERES and GEO-Enhanced TOA, Within-Atmosphere and Surface Fluxes, Clouds and Aerosols Daily Terra-Aqua Edition4A
+- **Download Link:** [TISAavg_SampleRead_SYN1deg_R5-922.zip](https://asdc.larc.nasa.gov/documents/ceres/read_software/TISAavg_SampleRead_SYN1deg_R5-922.zip)
+- **Local Paths:**
+  - `Echo Explorer/NASA SAR Data/CycloneHurricane-TISAavg_SampleRead_SYN1deg_R5-922`
+  - `Echo Explorer/NASA SAR Data/TISAavg_SampleRead_SYN1deg_R5-922 (1)` (3-hour temporal resolution)
+- **Format:** Binary files with metadata
+- **Examples:**
+  - `CER_SYN1deg-3Hour_Sample_R5V1`
+  - `CER_SYN1deg-3Hour_Sample_R5V1.dump`
+  - `CER_SYN1deg-3Hour_Sample_R5V1.met`
+  - `SYN1deg_HDFread.h`
+- **Description:** Top-of-atmosphere, cloud cover, aerosols, and surface flux data
+- **Use Case:** Cyclone/hurricane formation and atmospheric condition analysis
+
+---
+
+### 5. 🌊 Tsunami
+
+#### Jason-3 Sea Surface Height
+- **Dataset:** Jason-3 GPS Orbit and Sea Surface Height Anomalies (OGDR)
+- **Access Link:** [Jason-3 Dataset](https://search.earthdata.nasa.gov/search/granules?p=C2205122298-POCLOUD)
+- **Local Path:** `Echo Explorer/NASA SAR Data/Tsunami-Jason-3 GPS based orbit and SSHA OGDR`
+- **Format:** `.nc` files (e.g., `JA3_GPSOPR_2PgS609_209_20250921_175932_20250921_195515.nc`)
+- **Description:** GPS-based satellite altimetry for sea surface height anomaly detection
+- **Use Case:** Sea-level rise, storm surge, and tsunami impact analysis
+
+---
+
+### 6. 🏔️ Landslide Monitoring
+
+#### Landsat Surface Reflectance
+- **Dataset:** HLS Landsat Operational Land Imager Surface Reflectance (30m Global Daily v2.0)
+- **Access Link:** [Landsat OLI Dataset](https://search.earthdata.nasa.gov/search/granules?p=C2021957657-LPCLOUD)
+- **Local Path:** `Echo Explorer/NASA SAR Data/HLS Landsat Operational Land Imager Surface`
+- **Format:** `.tif` files
+- **Description:** 30m resolution surface reflectance data
+- **Use Case:** Land cover change, deforestation, floodplain mapping, and landslide monitoring
+
+---
+
+### 7. 🌋 Volcanic Eruption Risk
+
+#### ASTER Global Emissivity
+- **Dataset:** ASTER Global Emissivity Dataset (Monthly, 0.05 deg, HDF5 V041)
+- **Access Link:** [ASTER Dataset](https://search.earthdata.nasa.gov/search/granules?p=C2763268461-LPCLOUD)
+- **Description:** Thermal infrared monitoring with emissivity and surface temperature mapping
+- **Use Case:** Volcanic eruption detection, lava flow, and thermal anomaly analysis
+
+---
+
+### 8. 🌡️ Climate & Weather Reference Data
+
+#### Temperature & Humidity
+- **Dataset:** Maryland Temperature Humidity Dataset
+- **Local Path:** `Echo Explorer/NASA SAR Data/Maryland_Temperature_Humidity_1319/data`
+- **Format:** `.csv` files (e.g., `RelativeHumidity_20130905-20130918_preCal_office.csv`)
+- **Description:** Ground-based temperature and humidity measurements
+- **Use Case:** Climate model validation and local weather pattern analysis
+
+#### Water Vapor Data
+- **Dataset:** SAFARI 2000 MODIS MOD05_L2 Water Vapor Data (Binary Format)
+- **Download Link:** [modis_MOD05_watervapor_812.zip](https://data.ornldaac.earthdata.nasa.gov/protected/bundle/modis_MOD05_watervapor_812.zip)
+- **Source:** https://data.nasa.gov/
+- **Description:** MODIS atmospheric water vapor measurements
+- **Use Case:** Rainfall estimation and drought analysis
+
+---
 
 
-There are no views created for this resource yet.
-- **SAFARI 2000 MODIS MOD05_L2 Water Vapor Data (Binary Format)-Rainfall estimation, drought analysis:** https://data.ornldaac.earthdata.nasa.gov/protected/bundle/modis_MOD05_watervapor_812.zip source:https://data.nasa.gov/
+
+---
+
+## 🔗 Data Sources
+
+- **NASA Earthdata:** https://data.nasa.gov/
+- **ORNL DAAC:** https://data.ornldaac.earthdata.nasa.gov/
+- **NASA LARC ASDC:** https://asdc.larc.nasa.gov/
+- **NASA PO.DAAC:** https://search.earthdata.nasa.gov/
+
+
 ---
 
 ## 🏠 Hero & Index Section  
