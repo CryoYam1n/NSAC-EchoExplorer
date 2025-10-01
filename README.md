@@ -46,6 +46,17 @@ The following datasets from **NASA Earthdata** were referenced for the project:
 - **Global Urban Heat Island (UHI) Data Set, 2013:** [Link](https://search.earthdata.nasa.gov/search/granules?p=C3550192492-ESDIS)  
 - **Water Bodies Data Set:** https://data.ornldaac.earthdata.nasa.gov/protected/bundle/IMERG_Precip_Canada_Alaska_2097.zip source:https://data.nasa.gov/
 - **IMERG_Precip Canada Alaska Water Bodies Data Set:** https://data.nasa.gov/
+- URL: https://data.ornldaac.earthdata.nasa.gov/protected/bundle/FEWS_precip_711.zip
+
+Data Information (ZIP)
+URL: https://data.ornldaac.earthdata.nasa.gov/protected/bundle/IMERG_Precip_Canada_Alaska_2097.zip
+
+Dataset description:
+This dataset is a modification to the Integrated Multi-satellitE Retrievals for GPM (IMERG) Final Run microwave-only, daily precipitation Version 06 data. It provides bias-corrected IMERG...
+Source: ABoVE: Bias-Corrected IMERG Monthly Precipitation for Alaska and Canada, 2000-2020
+
+
+There are no views created for this resource yet.
 - **SAFARI 2000 MODIS MOD05_L2 Water Vapor Data (Binary Format)-Rainfall estimation, drought analysis:** https://data.ornldaac.earthdata.nasa.gov/protected/bundle/modis_MOD05_watervapor_812.zip source:https://data.nasa.gov/
 ---
 
