@@ -412,7 +412,7 @@ Edit `model_trainer.py` to adjust:
 ### Project Maintainer
 **Ashabul Yamin Tuhin**  
 📧 Email: ashabulyamintuhin@gmail.com  
-🔗 GitHub: [infernoYam1n](https://github.com/your-infernoYam1n)
+🔗 GitHub: [CryoYam1n](https://github.com/your-infernoYam1n)
 
 
 
