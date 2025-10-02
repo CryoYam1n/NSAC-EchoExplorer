@@ -1,4 +1,3 @@
-# data_processor.py - NASA Space Apps Challenge 2025 (COMPLETE - 9 DISASTERS)
 import numpy as np
 import cv2
 import os
@@ -14,7 +13,6 @@ import warnings
 import logging
 from collections import Counter
 
-# Optional imports with fallbacks
 try:
     import geopandas as gpd
     from shapely.geometry import box
@@ -71,7 +69,6 @@ class AdvancedSARDataProcessor:
         else:
             self.base_path = Path(base_path)
         
-        # CRITICAL: 9 disaster types with consistent labeling
         self.disaster_types = {
             'Flood': 0,
             'Urban Heat Risk': 1,
@@ -138,12 +135,12 @@ class AdvancedSARDataProcessor:
             'cyclone_tisa_2': self.base_path / "TISAavg_SampleRead_SYN1deg_R5-922 (1)"
         }
         
-        # === VOLCANIC ERUPTION (Label 8) - ADDED ===
+        # === VOLCANIC ERUPTION (Label 8) ===
         self.volcanic_paths = {
             'aster_volcanic': self.base_path / "Volcanic Eruption-ASTER Global Emissivity Dataset"
         }
         
-        # === TEMPERATURE & HUMIDITY (for context enhancement) ===
+        # === TEMPERATURE & HUMIDITY  ===
         self.climate_paths = {
             'temp_humidity': self.base_path / "Maryland_Temperature_Humidity_1319" / "data"
         }
