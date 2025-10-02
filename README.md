@@ -638,27 +638,179 @@ Navigate to `http://localhost:5000` in your web browser.
 
 ## 📊 Model Performance
 
-### Current Metrics (Validation Set)
 
-| Model | Accuracy | Precision | Recall | F1-Score | CV Score |
-|-------|----------|-----------|--------|----------|----------|
-| **Support Vector Machine** | 96.55% | 96.60% | 96.55% | 96.55% | 95.75% |
-| Gradient Boosting | 96.55% | 96.92% | 96.55% | 96.54% | 96.15% |
-| Random Forest | 96.55% | 96.65% | 96.55% | 96.53% | 95.38% |
-| Logistic Regression | 94.25% | 94.54% | 94.25% | 94.23% | 95.37% |
+## 📊 Processing Pipeline
 
-*Note: Performance metrics based on processed NASA SAR datasets with 5-fold cross-validation.*
+### Step 1: Process Data (Run First)
 
-## 🔧 Usage Guide
+```bash
+python data_processor.py
+```
 
-### Web Interface
+**Expected Output:**
+```
+================================================================================
+NASA SPACE APPS CHALLENGE 2025 - DATA PROCESSING
+9 DISASTER TYPES: Flood, Urban Heat, Fire, Deforestation,
+                  Drought, Tsunami, Landslide, Cyclone, Volcanic
+================================================================================
 
-1. **Access the Dashboard**: Open `http://localhost:5000`
-2. **Select Analysis Type**: Choose from Forest Fire, Flood, or Urban Heat analysis
-3. **Data Input Options**:
-   - Upload SAR images (recommended)
-   - Enter manual feature values
-4. **View Results**: Receive detailed risk assessment with confidence scores
+DATASET VERIFICATION
+================================================================================
+FLOOD (Label 0):
+  waterbodies_flood_1: X files
+  waterbodies_2: X files
+  ...
+
+VOLCANIC ERUPTION (Label 8):
+  aster_volcanic: X files
+
+================================================================================
+TOTAL FILES FOUND: XXXX
+================================================================================
+
+PROCESSING ALL 9 DISASTER TYPES
+================================================================================
+Loading Flood Data (Label 0)...
+  Loaded XX samples for Flood
+...
+Loading Volcanic Eruption Data (Label 8)...
+  Loaded XX samples for Volcanic Eruption
+
+DATA PROCESSING COMPLETE
+================================================================================
+Total samples: XXXX
+Features per sample: 15
+
+Class distribution:
+  [0] Flood: XX samples
+  [1] Urban Heat Risk: XX samples
+  [2] Forest Fire: XX samples
+  [3] Deforestation: XX samples
+  [4] Drought: XX samples
+  [5] Tsunami: XX samples
+  [6] Landslide Monitoring: XX samples
+  [7] Cyclone/Hurricane: XX samples
+  [8] Volcanic Eruption: XX samples
+
+Saved to: comprehensive_sar_data.npz
+================================================================================
+```
+
+### Step 2: Train Model
+
+```bash
+python model_trainer.py
+```
+
+**Expected Output:**
+```
+================================================================================
+NASA SPACE APPS CHALLENGE 2025
+CLIMATE DISASTER PREDICTION - MODEL TRAINER
+================================================================================
+9 Disaster Types:
+  [0] Flood
+  [1] Urban Heat Risk
+  [2] Forest Fire
+  [3] Deforestation
+  [4] Drought
+  [5] Tsunami
+  [6] Landslide Monitoring
+  [7] Cyclone/Hurricane
+  [8] Volcanic Eruption
+================================================================================
+
+Data loaded...
+Training set: XXX samples (80.0%)
+Test set: XXX samples (20.0%)
+
+MODEL TRAINING
+================================================================================
+Model                     Accuracy    F1-Score    CV Mean    
+-------------------------------------------------------------
+Random Forest            0.XXXX      0.XXXX      0.XXXX
+Gradient Boosting        0.XXXX      0.XXXX      0.XXXX
+...
+
+Best Model: Random Forest
+Test Accuracy: 0.XXXX
+F1-Score: 0.XXXX
+
+Model saved: climate_disaster_model.pkl
+Scaler saved: climate_scaler.pkl
+Metadata saved: climate_model_metadata.json
+```
+
+### Step 3: Run Web Application
+
+```bash
+python app.py
+```
+
+**Access at:** `http://localhost:5000`
+
+---
+
+## 🎨 Web Interface Features
+
+### Upload Disaster Data
+- **Supported Formats:** TIFF, HDF5, NetCDF4, BSQ, FILT, Shapefile, JPG, PNG
+- **Max File Size:** 500 MB
+- **Select Disaster Type:** Dropdown with all 9 types + Auto-detect
+
+### Manual Feature Input
+- Enter 15 comma-separated feature values
+- Format: `mean, std, min, max, median, homogeneity, energy, entropy, contrast, correlation, grad_mean, grad_std, fft_mean, fft_std, domain_feature`
+
+### Prediction Output
+- **Risk Level:** Primary disaster type detected
+- **Confidence Score:** Model certainty (0-100%)
+- **Severity Level:** High/Medium/Low
+- **Probability Distribution:** All 9 disaster type probabilities
+- **Recommended Actions:** Immediate + long-term response
+- **Confusion Matrix:** Shows model performance
+
+---
+
+## 🔬 Feature Engineering Details
+
+### 15 SAR Features Extracted:
+
+**Statistical Features (1-5):**
+- Mean intensity
+- Standard deviation
+- Min/Max intensity
+- Median intensity
+
+**Texture Features (6-10):**
+- GLCM homogeneity
+- GLCM energy
+- GLCM entropy
+- GLCM contrast
+- GLCM correlation
+
+**Gradient Features (11-12):**
+- Gradient magnitude mean
+- Gradient magnitude std
+
+**Frequency Features (13-14):**
+- FFT magnitude mean
+- FFT magnitude std
+
+**Domain-Specific Feature (15):**
+- **Flood/Drought:** Dark water body detection
+- **Urban Heat:** Bright surface detection
+- **Fire:** Burned area detection
+- **Deforestation:** Vegetation change
+- **Tsunami:** Coastal water anomalies
+- **Landslide:** Terrain gradient instability
+- **Cyclone:** Atmospheric variance
+- **Volcanic:** Thermal anomalies + texture ✨
+---
+
+
+
 
 
 
