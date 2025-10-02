@@ -1,12 +1,17 @@
 # NASA Space Apps Challenge 2025: Echo Explorer - Climate Disaster Risk Platform
 
-> Echo Explorer transforms space-based radar signals into actionable disaster insights. Using our Cosmo Radar system, we scan soil, water, forests, and urban areas with L-, X-, and C-band radar, detecting early warning signs that remain invisible to the human eye.
+> Echo Explorer: From Space Signals to Life-Saving Insights
+
+> Disasters often leave little time to prepare - but the warning signs are already written across Earth’s surface.
+
+> Echo Explorer listens to those hidden signals using Cosmo Radar. It transforms space-based radar signals into actionable disaster insights. Using our Cosmo Radar system, we scan soil, water, forests, and urban areas with L-, X-, and C-band radar, detecting early warning signs that remain invisible to the human eye.
 
 > Using advanced AI and machine learning models, these signals are analyzes environmental changes and predicts risks like forecast floods, droughts, wildfires, heatwaves, cyclones, tsunamis, volcanic eruptions, and deforestation. These analytical results are integrated into our Climate Disaster Risk Platform (CDRP) - a comprehensive dashboard with live intelligence feeds, global risk maps, and early-warning alerts to support timely action.
 
 > By connecting planetary radar simulations with real-world disaster risk analysis, Echo Explorer shows how NASA’s SAR data can evolve into a predictive shield for humanity. With future integration of live satellite streams and enhanced models, our vision is to empower communities, scientists, and governments to prepare in advance and build a more resilient future.
 
->From echoes to action. From signals to safety. That’s Echo Explorer.
+> 🚀 From echoes to action. From signals to safety. That’s Echo Explorer.
+
 
 <div align="center">
   <!-- Python Badge -->
