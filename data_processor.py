@@ -1,70 +1,288 @@
+# data_processor.py - NASA Space Apps Challenge 2025 (COMPLETE - 9 DISASTERS)
 import numpy as np
 import cv2
 import os
 import json
-from pathlib import Path
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
-from tqdm import tqdm
-import warnings
+import h5py
 import struct
+import pandas as pd
+from pathlib import Path
+from sklearn.preprocessing import StandardScaler
+from tqdm import tqdm
 from PIL import Image as PilImage
-warnings.filterwarnings('ignore')
+import warnings
+import logging
+from collections import Counter
 
-class SARDataProcessor:
+# Optional imports with fallbacks
+try:
+    import geopandas as gpd
+    from shapely.geometry import box
+    GEOPANDAS_AVAILABLE = True
+except ImportError:
+    GEOPANDAS_AVAILABLE = False
+    print("Warning: Geopandas not available - Shapefile support limited")
+
+try:
+    import rasterio
+    from rasterio.features import rasterize
+    RASTERIO_AVAILABLE = True
+except ImportError:
+    RASTERIO_AVAILABLE = False
+    print("Warning: Rasterio not available - GeoTIFF support limited")
+
+try:
+    from osgeo import gdal
+    GDAL_AVAILABLE = True
+except ImportError:
+    GDAL_AVAILABLE = False
+    print("Warning: GDAL not available - BSQ/IMG support limited")
+
+try:
+    import netCDF4 as nc
+    NETCDF_AVAILABLE = True
+except ImportError:
+    NETCDF_AVAILABLE = False
+    print("Warning: NetCDF4 not available - NC4 support limited")
+
+warnings.filterwarnings('ignore')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+class AdvancedSARDataProcessor:
     """
-    Professional SAR Data Processing Pipeline
-    For Climate Disaster Risk Prediction with Real NASA Dataset Integration
+    NASA Space Apps Challenge 2025 - 9 Climate Disaster Types
+    COMPLETE VERSION with Volcanic Eruption included
     """
     
-    def __init__(self, base_path="E:/Nasa Space Apps Challenge- 2025/Echo Explorer/NASA SAR Data/"):
-        self.base_path = Path(base_path)
+    def __init__(self, base_path=None):
+        if base_path is None:
+            possible_paths = [
+                Path(r"E:\Echo Explorer\NASA SAR Data"),
+                Path(r"E:\Nasa Space Apps Challenge- 2025\Echo Explorer\NASA SAR Data")
+            ]
+            self.base_path = None
+            for path in possible_paths:
+                if path.exists():
+                    self.base_path = path
+                    break
+            if self.base_path is None:
+                self.base_path = possible_paths[0]
+        else:
+            self.base_path = Path(base_path)
         
-        
-        self.forest_fire_path = self.base_path / "forest fire(LBA-ECO LC-35 GOES Imager)/data"
-        self.flood_path1 = self.base_path / "WaterBodies Dataset(flood)/data"
-        self.flood_path2 = self.base_path / "Water Bodies Dataset/Images"
-        self.urban_heat_path = self.base_path / "urban heat island data"
-        self.urban_data_path = self.base_path / "urban_data"
-        
-        
-        self.image_size = (256, 256)
-        self.features = []
-        self.labels = []
-        
-        print("Enhanced SAR Data Processor Initialized")
-        print(f"Base Path: {self.base_path}")
-        
-    def verify_data_paths(self):
-        """Verify all data paths exist and count files"""
-        paths = {
-            'Forest Fire Data': self.forest_fire_path,
-            'Flood Dataset 1': self.flood_path1,
-            'Flood Dataset 2 (Images)': self.flood_path2,
-            'Urban Heat Island': self.urban_heat_path,
-            'Urban Classification Data': self.urban_data_path
+        # CRITICAL: 9 disaster types with consistent labeling
+        self.disaster_types = {
+            'Flood': 0,
+            'Urban Heat Risk': 1,
+            'Forest Fire': 2,
+            'Deforestation': 3,
+            'Drought': 4,
+            'Tsunami': 5,
+            'Landslide Monitoring': 6,
+            'Cyclone/Hurricane': 7,
+            'Volcanic Eruption': 8  # ADDED - was missing
         }
         
-        total_files = 0
-        for name, path in paths.items():
-            if path.exists():
-                print(f"✅ {name} found at: {path}")
-                
-                if name == 'Forest Fire Data':
-                    files = list(path.glob("*.filt")) + list(path.glob("*.samer.*"))
-                elif name == 'Urban Heat Island':
-                    files = list(path.glob("*.tif")) + list(path.glob("*.tiff"))
-                elif 'Flood' in name:
-                    files = list(path.glob("*.jpg")) + list(path.glob("*.png")) + list(path.glob("*.tif"))
-                else:
-                    files = list(path.rglob("*.png")) + list(path.rglob("*.jpg")) + list(path.rglob("*.tif"))
-                
-                print(f"  Files found: {len(files)}")
-                total_files += len(files)
-            else:
-                print(f"❌ {name} NOT found at: {path}")
+        # === FLOOD DATASETS (Label 0) ===
+        self.flood_paths = {
+            'waterbodies_flood_1': self.base_path / "WaterBodies Dataset(flood)" / "data",
+            'waterbodies_2': self.base_path / "Water Bodies Dataset",
+            'sentinel_flood_cyclone': self.base_path / "Flood &  Cyclone (SENTINEL-1B_SINGLE_POL_METADATA_GRD_HIGH_RES)",
+            'smap_soil_moisture': self.base_path / "SMAPSentinel-1 L2 RadiometerRadar 30-Second Scene 3 km EASE-Grid Soil Moisture V003",
+        }
         
-        print(f"\nTotal dataset files available: {total_files}")
-        return total_files > 0
+        # === URBAN HEAT ISLAND (Label 1) ===
+        self.urban_heat_paths = {
+            'uhi_yearly': self.base_path / "urban heat island-sdei-yceo-sfc-uhi",
+            'uhi_train': self.base_path / "urban heat island data",
+            'uhi_global_2013': self.base_path / "sdei-global-uhi-2013",
+            'uhi_urban_cluster': self.base_path / "sdei-yceo-sfc-uhi-v4-urban-cluster-means-shp"
+        }
+        
+        # === FOREST FIRE (Label 2) ===
+        self.fire_paths = {
+            'goes_fire': self.base_path / "forest fire(LBA-ECO LC-35 GOES Imager)" / "data",
+            'global_fire_2016': self.base_path / "Global_fire_atlas_V1_ignitions_2016",
+            'modis_fire': self.base_path / "LC39_MODIS_Fire_SA_1186" / "data",
+            'cms_global_fire': self.base_path / "CMS_Global_Fire_Atlas_1642" / "data"
+        }
+        
+        # === DEFORESTATION (Label 3) ===
+        self.deforestation_paths = {
+            'modis_deforest': self.base_path / "LC39_MODIS_Fire_SA_1186" / "data",
+            'cms_deforest': self.base_path / "CMS_Global_Fire_Atlas_1642" / "data"
+        }
+        
+        # === DROUGHT (Label 4) ===
+        self.drought_paths = {
+            'flood_draught_comp': self.base_path / "Floods & Draught" / "comp",
+            'flood_draught_fews': self.base_path / "Floods & Draught" / "FEWS_precip_711",
+            'flood_draught_imerg': self.base_path / "Floods & Draught" / "IMERG_Precip_Canada_Alaska_2097",
+            'flood_draught_grace': self.base_path / "Floods & Draught" / "GRACEDADM_CLSM025GL_7D"
+        }
+        
+        # === TSUNAMI (Label 5) ===
+        self.tsunami_paths = {
+            'jason3_tsunami': self.base_path / "Tsunami-Jason-3 GPS based orbit and SSHA OGDR"
+        }
+        
+        # === LANDSLIDE MONITORING (Label 6) ===
+        self.landslide_paths = {
+            'hls_landsat': self.base_path / "HLS Landsat Operational Land Imager Surface"
+        }
+        
+        # === CYCLONE/HURRICANE (Label 7) ===
+        self.cyclone_paths = {
+            'cyclone_tisa_1': self.base_path / "CycloneHurricane-TISAavg_SampleRead_SYN1deg_R5-922",
+            'cyclone_tisa_2': self.base_path / "TISAavg_SampleRead_SYN1deg_R5-922 (1)"
+        }
+        
+        # === VOLCANIC ERUPTION (Label 8) - ADDED ===
+        self.volcanic_paths = {
+            'aster_volcanic': self.base_path / "Volcanic Eruption-ASTER Global Emissivity Dataset"
+        }
+        
+        # === TEMPERATURE & HUMIDITY (for context enhancement) ===
+        self.climate_paths = {
+            'temp_humidity': self.base_path / "Maryland_Temperature_Humidity_1319" / "data"
+        }
+        
+        self.image_size = (256, 256)
+        self.max_pixels = 10_000_000
+        self.max_files_per_type = 1000
+        self.batch_size = 50
+        
+        logger.info("=" * 80)
+        logger.info("NASA SPACE APPS CHALLENGE 2025 - SAR DATA PROCESSOR")
+        logger.info("=" * 80)
+        logger.info(f"Base Path: {self.base_path}")
+        logger.info("9 Disaster Types:")
+        for name, label in sorted(self.disaster_types.items(), key=lambda x: x[1]):
+            logger.info(f"  [{label}] {name}")
+        logger.info("=" * 80)
+    
+    def verify_all_datasets(self):
+        """Comprehensive dataset verification"""
+        logger.info("\n" + "="*80)
+        logger.info("DATASET VERIFICATION")
+        logger.info("="*80)
+        
+        total_files = 0
+        dataset_summary = {}
+        
+        all_datasets = {
+            'FLOOD (Label 0)': self.flood_paths,
+            'URBAN HEAT ISLAND (Label 1)': self.urban_heat_paths,
+            'FOREST FIRE (Label 2)': self.fire_paths,
+            'DEFORESTATION (Label 3)': self.deforestation_paths,
+            'DROUGHT (Label 4)': self.drought_paths,
+            'TSUNAMI (Label 5)': self.tsunami_paths,
+            'LANDSLIDE MONITORING (Label 6)': self.landslide_paths,
+            'CYCLONE/HURRICANE (Label 7)': self.cyclone_paths,
+            'VOLCANIC ERUPTION (Label 8)': self.volcanic_paths,
+            'CLIMATE/WEATHER (context)': self.climate_paths
+        }
+        
+        for category, paths in all_datasets.items():
+            logger.info(f"\n{category}:")
+            for name, path in paths.items():
+                count = self._count_files(path, name)
+                total_files += count
+                dataset_summary[name] = count
+        
+        logger.info(f"\n{'='*80}")
+        logger.info(f"TOTAL FILES FOUND: {total_files}")
+        logger.info(f"{'='*80}")
+        
+        if total_files == 0:
+            logger.error("\nWARNING: No data files found!")
+            logger.error(f"Please check that your data is at: {self.base_path}")
+        
+        return total_files > 0, dataset_summary
+    
+    def _count_files(self, path, dataset_name):
+        """Count files in a dataset path"""
+        if not path.exists():
+            logger.warning(f"  {dataset_name}: NOT FOUND at {path}")
+            return 0
+        
+        extensions = ['.jpg', '.png', '.tif', '.tiff', '.h5', '.hdf5', '.filt', 
+                     '.csv', '.bsq', '.shp', '.nc4', '.nc', '.img', '.if', '.dbf',
+                     '.prj', '.shx', '.sbx', '.CPG', '.xml', '.ovr', '.aux']
+        
+        files = []
+        try:
+            for ext in extensions:
+                files.extend(list(path.glob(f"*{ext}")))
+                if len(files) < 100:
+                    files.extend(list(path.glob(f"*/*{ext}")))
+        except PermissionError:
+            logger.warning(f"  {dataset_name}: Permission denied")
+            return 0
+        except Exception as e:
+            logger.warning(f"  {dataset_name}: Error - {str(e)[:50]}")
+            return 0
+        
+        # Remove duplicates and auxiliary files
+        main_files = [f for f in files if f.suffix.lower() not in ['.xml', '.ovr', '.aux']]
+        files = list(set(main_files))[:self.max_files_per_type]
+        
+        logger.info(f"  {dataset_name}: {len(files)} files")
+        return len(files)
+    
+    # ==================== FILE READERS ====================
+    
+    def read_h5_file(self, file_path):
+        """Read HDF5/H5 files"""
+        try:
+            with h5py.File(file_path, 'r') as f:
+                def extract_data(obj, depth=0):
+                    if depth > 5:
+                        return None
+                    if isinstance(obj, h5py.Dataset):
+                        try:
+                            data = obj[()]
+                            if isinstance(data, np.ndarray) and data.size > 0:
+                                return data
+                        except:
+                            pass
+                    elif isinstance(obj, h5py.Group):
+                        for key in obj.keys():
+                            result = extract_data(obj[key], depth + 1)
+                            if result is not None:
+                                return result
+                    return None
+                
+                data = extract_data(f)
+                if data is not None:
+                    return self._normalize_array(data)
+        except Exception as e:
+            logger.debug(f"H5 read error {file_path.name}: {str(e)[:100]}")
+        return None
+    
+    def read_nc4_file(self, file_path):
+        """Read NetCDF4 files"""
+        if not NETCDF_AVAILABLE:
+            return self.read_h5_file(file_path)
+        
+        try:
+            with nc.Dataset(file_path, 'r') as dataset:
+                priority_vars = ['lwe_thickness', 'soil_moisture', 'ssha', 
+                               'sea_surface_height', 'precipitation', 'data', 'value']
+                
+                for var_name in priority_vars:
+                    if var_name in dataset.variables:
+                        data = dataset.variables[var_name][:]
+                        return self._normalize_array(data)
+                
+                if len(dataset.variables) > 0:
+                    first_var = list(dataset.variables.keys())[0]
+                    data = dataset.variables[first_var][:]
+                    return self._normalize_array(data)
+        except:
+            return self.read_h5_file(file_path)
+        return None
     
     def read_filt_file(self, file_path):
         """Read NASA GOES .filt format files"""
@@ -72,386 +290,450 @@ class SARDataProcessor:
             with open(file_path, 'rb') as f:
                 data = f.read()
                 
-                if len(data) % 4 == 0:
-                    values = struct.unpack(f'>{len(data)//4}f', data)
-                    size = int(np.sqrt(len(values)))
-                    if size * size == len(values):
-                        img_array = np.array(values).reshape(size, size)
-                        img_array = ((img_array - img_array.min()) / (img_array.max() - img_array.min()) * 255).astype(np.uint8)
-                        return img_array
+                for dtype, fmt in [(np.float32, 'f'), (np.float64, 'd'), (np.uint16, 'H')]:
+                    element_size = np.dtype(dtype).itemsize
+                    if len(data) % element_size == 0:
+                        try:
+                            values = struct.unpack(f'>{len(data)//element_size}{fmt}', data)
+                            size = int(np.sqrt(len(values)))
+                            if size * size == len(values):
+                                return self._normalize_array(np.array(values).reshape(size, size))
+                        except:
+                            continue
                 
                 img_array = np.frombuffer(data, dtype=np.uint8)
                 size = int(np.sqrt(len(img_array)))
                 if size * size <= len(img_array):
-                    img_array = img_array[:size*size].reshape(size, size)
-                    return img_array
-                    
+                    return img_array[:size*size].reshape(size, size)
         except Exception as e:
-            print(f"Error reading .filt file {file_path}: {e}")
+            logger.debug(f"FILT read error {file_path.name}: {str(e)[:100]}")
+        return None
+    
+    def read_bsq_file(self, file_path):
+        """Read BSQ/IMG files"""
+        if GDAL_AVAILABLE:
+            try:
+                dataset = gdal.Open(str(file_path))
+                if dataset:
+                    band = dataset.GetRasterBand(1)
+                    return self._normalize_array(band.ReadAsArray())
+            except:
+                pass
+        
+        try:
+            with open(file_path, 'rb') as f:
+                data = f.read()
+                if len(data) % 4 == 0:
+                    values = struct.unpack(f'>{len(data)//4}f', data)
+                    size = int(np.sqrt(len(values)))
+                    if size * size == len(values):
+                        return self._normalize_array(np.array(values).reshape(size, size))
+        except:
+            pass
+        return None
+    
+    def read_shapefile(self, file_path):
+        """Read shapefiles and rasterize"""
+        if not GEOPANDAS_AVAILABLE or not RASTERIO_AVAILABLE:
             return None
+        
+        try:
+            gdf = gpd.read_file(file_path)
+            if gdf.empty:
+                return None
+            
+            bounds = gdf.total_bounds
+            width, height = self.image_size
+            transform = rasterio.transform.from_bounds(
+                bounds[0], bounds[1], bounds[2], bounds[3], width, height
+            )
+            
+            shapes = [(geom, 1) for geom in gdf.geometry if geom is not None]
+            if not shapes:
+                return None
+                
+            img_array = rasterize(
+                shapes, out_shape=(height, width), 
+                transform=transform, fill=0, dtype=np.uint8
+            )
+            return img_array
+        except Exception as e:
+            logger.debug(f"Shapefile error {file_path.name}: {str(e)[:100]}")
+        return None
+    
+    def read_tiff(self, file_path):
+        """Read TIFF/GeoTIFF files"""
+        if RASTERIO_AVAILABLE:
+            try:
+                with rasterio.open(file_path) as src:
+                    data = src.read(1)
+                    return self._normalize_array(data)
+            except:
+                pass
+        
+        if GDAL_AVAILABLE:
+            try:
+                dataset = gdal.Open(str(file_path))
+                if dataset:
+                    data = dataset.GetRasterBand(1).ReadAsArray()
+                    return self._normalize_array(data)
+            except:
+                pass
+        
+        try:
+            with PilImage.open(file_path) as img:
+                if img.size[0] * img.size[1] > self.max_pixels:
+                    ratio = np.sqrt(self.max_pixels / (img.size[0] * img.size[1]))
+                    new_size = (int(img.size[0] * ratio), int(img.size[1] * ratio))
+                    img = img.resize(new_size, PilImage.LANCZOS)
+                if img.mode != 'L':
+                    img = img.convert('L')
+                return np.array(img)
+        except:
+            pass
+        
+        try:
+            img = cv2.imread(str(file_path), cv2.IMREAD_GRAYSCALE)
+            if img is not None:
+                return img
+        except:
+            pass
+        
+        return None
     
     def load_image(self, file_path):
-        """Load image using PIL first, fallback to cv2 for robustness"""
+        """Load standard images"""
         try:
-            pil_img = PilImage.open(str(file_path))
-            img = np.array(pil_img.convert('L'))
-            return img
-        except Exception as e:
-            print(f"PIL failed for {file_path}: {e}. Falling back to cv2.")
+            img = PilImage.open(str(file_path))
+            if img.mode == 'RGBA':
+                img = img.convert('RGB')
+            if img.mode != 'L':
+                img = img.convert('L')
+            return np.array(img)
+        except:
             try:
-                img = cv2.imread(str(file_path), cv2.IMREAD_GRAYSCALE)
-                return img
-            except Exception as e:
-                print(f"cv2 failed for {file_path}: {e}")
+                return cv2.imread(str(file_path), cv2.IMREAD_GRAYSCALE)
+            except:
                 return None
     
-    def load_forest_fire_data(self, limit=None):
-        """Load forest fire data from NASA GOES dataset"""
-        print("\nLoading NASA GOES Forest Fire Data...")
+    def read_csv_climate(self, file_path):
+        """Read CSV climate data"""
+        try:
+            df = pd.read_csv(file_path)
+            
+            temp_cols = [col for col in df.columns if any(kw in col.lower() for kw in ['temp', 'temperature'])]
+            humid_cols = [col for col in df.columns if any(kw in col.lower() for kw in ['humid', 'humidity', 'rh'])]
+            
+            if temp_cols and len(df) > 0:
+                temp_data = df[temp_cols[0]].values
+                if len(temp_data) >= 256:
+                    size = int(np.sqrt(len(temp_data)))
+                    img_data = temp_data[:size*size].reshape(size, size)
+                    return self._normalize_array(img_data)
+                else:
+                    tiled = np.tile(temp_data, (256 // len(temp_data) + 1))
+                    img_data = tiled[:256*256].reshape(256, 256)
+                    return self._normalize_array(img_data)
+        except Exception as e:
+            logger.debug(f"CSV error {file_path.name}: {str(e)[:100]}")
+        return None
+    
+    def _normalize_array(self, data):
+        """Normalize array to 0-255 uint8"""
+        if data is None or data.size == 0:
+            return None
         
-        forest_features = []
-        forest_labels = []
+        data = np.nan_to_num(data, nan=0.0, posinf=0.0, neginf=0.0)
         
-        if self.forest_fire_path.exists():
-            filt_files = list(self.forest_fire_path.glob("*.filt"))
-            samer_files = list(self.forest_fire_path.glob("*.samer.*"))
-            all_files = filt_files + samer_files
+        if data.ndim > 2:
+            if data.shape[0] <= 3:
+                data = data[0]
+            else:
+                data = data.mean(axis=0)
+        
+        if data.max() == data.min():
+            return np.zeros(self.image_size, dtype=np.uint8)
+        
+        normalized = ((data - data.min()) / (data.max() - data.min()) * 255).astype(np.uint8)
+        
+        if normalized.shape != self.image_size:
+            try:
+                normalized = cv2.resize(normalized, self.image_size, interpolation=cv2.INTER_AREA)
+            except:
+                return np.zeros(self.image_size, dtype=np.uint8)
+        
+        return normalized
+    
+    # ==================== DATA LOADING ====================
+    
+    def load_dataset_by_type(self, paths_dict, disaster_label, disaster_type_name, data_context):
+        """Generic dataset loader"""
+        logger.info(f"\nLoading {disaster_type_name} Data (Label {disaster_label})...")
+        X, y, types = [], [], []
+        
+        for name, path in paths_dict.items():
+            if not path.exists():
+                continue
             
-            if limit:
-                all_files = all_files[:limit]
-            
-            print(f"Found {len(all_files)} forest fire files")
-            
-            for file_path in tqdm(all_files, desc="Processing forest fire data"):
+            files = []
+            for ext in ['.tif', '.tiff', '.h5', '.hdf5', '.nc4', '.nc', 
+                       '.bsq', '.img', '.filt', '.shp', '.jpg', '.png', '.csv']:
                 try:
-                    if file_path.suffix == '.filt':
-                        img = self.read_filt_file(file_path)
-                    else:
-                        img = self.load_image(file_path)
+                    files.extend(list(path.glob(f"*{ext}")))
+                    if len(files) < 50:
+                        files.extend(list(path.glob(f"*/*{ext}")))
+                except:
+                    pass
+            
+            files = list(set(files))[:self.max_files_per_type]
+            
+            if not files:
+                continue
+            
+            for file in tqdm(files, desc=f"  {name}"):
+                img = None
+                ext = file.suffix.lower()
+                
+                try:
+                    if ext in ['.h5', '.hdf5']:
+                        img = self.read_h5_file(file)
+                    elif ext in ['.nc4', '.nc']:
+                        img = self.read_nc4_file(file)
+                    elif ext in ['.bsq', '.img']:
+                        img = self.read_bsq_file(file)
+                    elif ext == '.filt':
+                        img = self.read_filt_file(file)
+                    elif ext in ['.tif', '.tiff']:
+                        img = self.read_tiff(file)
+                    elif ext == '.shp':
+                        img = self.read_shapefile(file)
+                    elif ext == '.csv':
+                        img = self.read_csv_climate(file)
+                    elif ext in ['.jpg', '.png']:
+                        img = self.load_image(file)
                     
                     if img is not None and img.size > 0:
-                        img = cv2.resize(img, self.image_size)
-                        features = self.extract_sar_features(img, 'forest')
-                        forest_features.append(features)
-                        forest_labels.append(2)  
-                    
-                except Exception as e:
-                    print(f"Error processing {file_path}: {e}")
-                    
-        return np.array(forest_features), np.array(forest_labels)
-    
-    def load_flood_data(self, limit=None):
-        """Load flood/water body data from both datasets"""
-        print("\nLoading Flood/Water Body Data...")
-        
-        flood_features = []
-        flood_labels = []
-        
-        flood_paths = [self.flood_path1, self.flood_path2]
-        
-        for flood_path in flood_paths:
-            if flood_path.exists():
-                image_files = (list(flood_path.glob("*.jpg")) + 
-                               list(flood_path.glob("*.png")) + 
-                               list(flood_path.glob("*.tif")) + 
-                               list(flood_path.glob("*.tiff")))
-                
-                if limit and len(image_files) > limit // 2:
-                    image_files = image_files[:limit // 2]
-                
-                print(f"Processing {len(image_files)} files from {flood_path}")
-                
-                for img_file in tqdm(image_files, desc=f"Processing {flood_path.name}"):
-                    try:
-                        img = self.load_image(img_file)
-                        if img is None:
-                            continue
-                            
-                        img = cv2.resize(img, self.image_size)
-                        features = self.extract_sar_features(img, 'wetland')
-                        flood_features.append(features)
-                        flood_labels.append(0)  
+                        if img.shape != self.image_size:
+                            img = cv2.resize(img, self.image_size, interpolation=cv2.INTER_AREA)
                         
-                    except Exception as e:
-                        print(f"Error processing {img_file}: {e}")
-                        
-        return np.array(flood_features), np.array(flood_labels)
-    
-    def load_urban_heat_data(self, limit=None):
-        """Load urban heat island and land cover data"""
-        print("\nLoading Urban Heat Island and Land Cover Data...")
-        
-        urban_features = []
-        urban_labels = []
-        
-        
-        if self.urban_heat_path.exists():
-            tif_files = list(self.urban_heat_path.glob("*.tif")) + list(self.urban_heat_path.glob("*.tiff"))
-            
-            if limit:
-                tif_files = tif_files[:limit // 2]
-            
-            print(f"Processing {len(tif_files)} urban heat files")
-            
-            for tif_file in tqdm(tif_files, desc="Processing urban heat data"):
-                try:
-                    img = self.load_image(tif_file)
-                    if img is None:
-                        continue
-                    
-                    img = cv2.resize(img, self.image_size)
-                    features = self.extract_sar_features(img, 'urban')
-                    urban_features.append(features)
-                    urban_labels.append(1)  
-                    
+                        features = self.extract_sar_features(img, data_context, disaster_type_name)
+                        X.append(features)
+                        y.append(disaster_label)
+                        types.append(disaster_type_name)
                 except Exception as e:
-                    print(f"Error processing {tif_file}: {e}")
+                    logger.debug(f"Error processing {file.name}: {str(e)[:100]}")
+                    continue
         
-        
-        if self.urban_data_path.exists():
-            urban_categories = ['urban', 'agri', 'barrenland', 'grassland']
-            
-            for category in urban_categories:
-                category_path = self.urban_data_path / category
-                if category_path.exists():
-                    for subdir in ['s1', 's2']:
-                        subdir_path = category_path / subdir
-                        if subdir_path.exists():
-                            png_files = list(subdir_path.glob("*.png"))
-                            
-                            max_files = (limit // (len(urban_categories) * 2)) if limit else len(png_files)
-                            png_files = png_files[:max_files]
-                            
-                            for png_file in tqdm(png_files, desc=f"Processing {category}/{subdir}"):
-                                try:
-                                    img = self.load_image(png_file)
-                                    if img is None:
-                                        continue
-                                    
-                                    img = cv2.resize(img, self.image_size)
-                                    features = self.extract_sar_features(img, 'urban')
-                                    urban_features.append(features)
-                                    
-                                   
-                                    if category == 'urban':
-                                        urban_labels.append(1)  
-                                    else:
-                                        urban_labels.append(3)  
-                                
-                                except Exception as e:
-                                    print(f"Error processing {png_file}: {e}")
-        
-        return np.array(urban_features), np.array(urban_labels)
+        logger.info(f"  Loaded {len(X)} samples for {disaster_type_name}")
+        return X, y, types
     
-    def extract_sar_features(self, image, data_type):
-        """Enhanced SAR feature extraction"""
+    def extract_sar_features(self, image, data_type, disaster_name):
+        """Extract exactly 15 SAR features - CONSISTENT across all files"""
         features = []
         
+        if image is None or image.size == 0:
+            return [0.0] * 15
+        
+        # 1-5: Statistical features
         features.extend([
-            np.mean(image),
-            np.std(image),
-            np.min(image),
-            np.max(image),
-            np.median(image)
+            float(np.mean(image)),
+            float(np.std(image)),
+            float(np.min(image)),
+            float(np.max(image)),
+            float(np.median(image))
         ])
         
-        glcm_features = self.calculate_glcm_features(image)
-        features.extend(glcm_features)
+        # 6-10: Texture features (GLCM approximation)
+        kernel = np.array([[1, 1, 1], [1, 0, 1], [1, 1, 1]], dtype=np.float32)
+        local_patterns = cv2.filter2D(image.astype(np.float32), -1, kernel)
         
+        contrast = float(np.var(image))
+        homogeneity = float(1.0 / (1.0 + contrast))
+        
+        hist, _ = np.histogram(image, bins=256, range=(0, 256))
+        hist = hist / (hist.sum() + 1e-10)
+        energy = float(np.sum(hist ** 2))
+        entropy = float(-np.sum(hist * np.log(hist + 1e-10)))
+        
+        correlation = np.corrcoef(image.flatten(), local_patterns.flatten())[0, 1]
+        correlation = 0.0 if np.isnan(correlation) else float(abs(correlation))
+        
+        features.extend([homogeneity, energy, entropy, contrast, correlation])
+        
+        # 11-12: Gradient features
         grad_x = cv2.Sobel(image, cv2.CV_64F, 1, 0, ksize=3)
         grad_y = cv2.Sobel(image, cv2.CV_64F, 0, 1, ksize=3)
         gradient_magnitude = np.sqrt(grad_x**2 + grad_y**2)
         
         features.extend([
-            np.mean(gradient_magnitude),
-            np.std(gradient_magnitude)
+            float(np.mean(gradient_magnitude)),
+            float(np.std(gradient_magnitude))
         ])
         
+        # 13-14: Frequency features
         fft = np.fft.fft2(image)
         fft_magnitude = np.abs(fft)
         features.extend([
-            np.mean(fft_magnitude),
-            np.std(fft_magnitude)
+            float(np.mean(fft_magnitude)),
+            float(np.std(fft_magnitude))
         ])
         
-        if data_type == 'forest':
-            forest_index = self.calculate_forest_index(image)
-            features.append(forest_index)
-        elif data_type == 'wetland':
-            water_coverage = self.estimate_water_coverage(image)
-            features.append(water_coverage)
-        elif data_type == 'urban':
-            urban_density = self.estimate_urban_density(image)
-            features.append(urban_density)
-            
+        # 15: Domain-specific feature - IMPROVED for 9 disaster types
+        normalized = image.astype(np.float32) / 255.0
+        
+        if data_type == 'fire' or disaster_name == 'Forest Fire':
+            dark_areas = np.mean(normalized < 0.3)
+            medium_areas = np.mean((normalized >= 0.3) & (normalized < 0.7))
+            domain_feature = 0.6 * dark_areas + 0.3 * medium_areas + 0.1 * (1 - np.mean(normalized))
+        
+        elif data_type == 'flood' or disaster_name == 'Flood':
+            very_dark = np.sum(normalized < 0.15)
+            moderately_dark = np.sum((normalized >= 0.15) & (normalized < 0.25))
+            domain_feature = min((0.8 * very_dark + 0.3 * moderately_dark) / image.size, 1.0)
+        
+        elif data_type == 'urban' or disaster_name == 'Urban Heat Risk':
+            very_bright = np.sum(normalized > 0.7)
+            moderately_bright = np.sum((normalized >= 0.5) & (normalized <= 0.7))
+            domain_feature = min((0.9 * very_bright + 0.4 * moderately_bright) / image.size, 1.0)
+        
+        elif disaster_name == 'Drought':
+            # Drought: low moisture = higher brightness in specific bands
+            bright_areas = np.mean(normalized > 0.6)
+            domain_feature = float(bright_areas * 0.8 + np.std(normalized) * 0.2)
+        
+        elif disaster_name == 'Tsunami':
+            # Tsunami: Focus on water bodies (dark areas)
+            very_dark = np.sum(normalized < 0.2)
+            domain_feature = min(0.9 * very_dark / image.size, 1.0)
+        
+        elif disaster_name == 'Landslide Monitoring':
+            # Landslide: High gradient areas (terrain instability)
+            domain_feature = float(np.mean(gradient_magnitude > np.percentile(gradient_magnitude, 75)))
+        
+        elif disaster_name == 'Cyclone/Hurricane':
+            # Cyclone: High variance patterns (storm systems)
+            domain_feature = float(np.var(normalized) * 2.0)
+        
+        elif disaster_name == 'Volcanic Eruption':
+            # Volcanic: Thermal anomalies (bright spots) + texture variation
+            very_bright = np.sum(normalized > 0.8)
+            texture_var = float(np.std(local_patterns))
+            domain_feature = min((0.7 * very_bright / image.size) + (0.3 * texture_var / 255.0), 1.0)
+        
+        elif disaster_name == 'Deforestation':
+            # Deforestation: Change in vegetation (moderate brightness changes)
+            moderate_bright = np.mean((normalized >= 0.4) & (normalized <= 0.6))
+            domain_feature = float(moderate_bright)
+        
+        else:
+            domain_feature = float(np.mean(normalized))
+        
+        features.append(float(domain_feature))
+        
+        if len(features) != 15:
+            logger.error(f"Feature count mismatch: {len(features)} instead of 15")
+            return [0.0] * 15
+        
         return features
     
-    def calculate_glcm_features(self, image):
-        """Enhanced texture features calculation"""
-        mean_intensity = np.mean(image)
+    def process_all_data(self):
+        """Process all 9 disaster types"""
+        logger.info("\n" + "="*80)
+        logger.info("PROCESSING ALL 9 DISASTER TYPES")
+        logger.info("="*80)
         
-        kernel = np.array([[1, 1, 1], [1, 0, 1], [1, 1, 1]])
-        local_patterns = cv2.filter2D(image.astype(np.float32), -1, kernel)
+        X_all, y_all, types_all = [], [], []
         
-        contrast = np.var(image)
-        homogeneity = 1 / (1 + contrast)
+        # CORRECTED: Load all 9 disaster types with proper labels
+        datasets_config = [
+            (self.flood_paths, 0, 'Flood', 'flood'),
+            (self.urban_heat_paths, 1, 'Urban Heat Risk', 'urban'),
+            (self.fire_paths, 2, 'Forest Fire', 'fire'),
+            (self.deforestation_paths, 3, 'Deforestation', 'fire'),
+            (self.drought_paths, 4, 'Drought', 'flood'),
+            (self.tsunami_paths, 5, 'Tsunami', 'weather'),
+            (self.landslide_paths, 6, 'Landslide Monitoring', 'weather'),
+            (self.cyclone_paths, 7, 'Cyclone/Hurricane', 'weather'),
+            (self.volcanic_paths, 8, 'Volcanic Eruption', 'volcanic')  # ADDED
+        ]
         
-        hist, _ = np.histogram(image, bins=256, range=(0, 256))
-        hist = hist / hist.sum()
-        energy = np.sum(hist ** 2)
+        for paths, label, disaster_name, context in datasets_config:
+            X, y, types = self.load_dataset_by_type(paths, label, disaster_name, context)
+            X_all.extend(X)
+            y_all.extend(y)
+            types_all.extend(types)
         
-        entropy = -np.sum(hist * np.log(hist + 1e-10))
+        if len(X_all) == 0:
+            logger.error("No data loaded! Please check dataset paths.")
+            return False
         
-        correlation = np.corrcoef(image.flatten(), local_patterns.flatten())[0,1]
-        if np.isnan(correlation):
-            correlation = 0
-            
-        return [homogeneity, energy, entropy, contrast, abs(correlation)]
-    
-    def calculate_forest_index(self, image):
-        """More realistic forest/vegetation index"""
-        normalized_image = image / 255.0
-        dark_areas = np.mean(normalized_image < 0.3)
-        medium_areas = np.mean((normalized_image >= 0.3) & (normalized_image < 0.7))
-        vegetation_index = 0.6 * dark_areas + 0.3 * medium_areas + 0.1 * (1 - np.mean(normalized_image))
-        return min(max(vegetation_index, 0), 1)
-    
-    def estimate_water_coverage(self, image):
-        """Enhanced water coverage estimation for features (not labels)"""
-        normalized_image = image / 255.0
-        water_threshold1 = 0.15
-        water_threshold2 = 0.25
-        very_dark = np.sum(normalized_image < water_threshold1)
-        moderately_dark = np.sum((normalized_image >= water_threshold1) & (normalized_image < water_threshold2))
-        total_pixels = image.size
-        water_coverage = (0.8 * very_dark + 0.3 * moderately_dark) / total_pixels
-        return min(water_coverage, 1.0)
-    
-    def estimate_urban_density(self, image):
-        """Enhanced urban density estimation for features (not labels)"""
-        normalized_image = image / 255.0
-        bright_threshold1 = 0.7
-        bright_threshold2 = 0.5
-        very_bright = np.sum(normalized_image > bright_threshold1)
-        moderately_bright = np.sum((normalized_image >= bright_threshold2) & (normalized_image <= bright_threshold1))
-        total_pixels = image.size
-        urban_density = (0.9 * very_bright + 0.4 * moderately_bright) / total_pixels
-        return min(urban_density, 1.0)
-    
-    def create_integrated_dataset(self, limit_per_type=200):
-        """Create integrated dataset using dataset metadata for labels"""
-        print("\n" + "="*60)
-        print("CREATING REALISTIC INTEGRATED CLIMATE DISASTER DATASET")
-        print("="*60)
+        # Convert to numpy arrays
+        X_all = np.array(X_all)
+        y_all = np.array(y_all)
         
-        forest_X, forest_y = self.load_forest_fire_data(limit=limit_per_type)
-        flood_X, flood_y = self.load_flood_data(limit=limit_per_type)
-        urban_X, urban_y = self.load_urban_heat_data(limit=limit_per_type)
-        
-        all_features = []
-        all_labels = []
-        disaster_types = []
-        
-        if len(forest_X) > 0:
-            all_features.extend(forest_X)
-            all_labels.extend(forest_y)
-            disaster_types.extend(['fire'] * len(forest_X))
-            
-        if len(flood_X) > 0:
-            all_features.extend(flood_X)
-            all_labels.extend(flood_y)
-            disaster_types.extend(['flood'] * len(flood_X))
-            
-        if len(urban_X) > 0:
-            all_features.extend(urban_X)
-            all_labels.extend(urban_y)
-            disaster_types.extend(['heat' if label == 1 else 'deforestation' for label in urban_y])
-        
-        X = np.array(all_features)
-        y = np.array(all_labels)
-        
-        print(f"\nRealistic Integrated Dataset Created:")
-        print(f"Total samples: {len(X)}")
-        print(f"Feature dimensions: {X.shape[1] if len(X) > 0 else 0}")
-        print(f"Label distribution:")
-        if len(y) > 0:
-            unique, counts = np.unique(y, return_counts=True)
-            class_names = ['Flood Risk', 'Urban Heat Risk', 'Fire Risk', 'Deforestation Risk']
-            for label, count in zip(unique, counts):
-                risk_type = class_names[int(label)]
-                print(f"  {risk_type}: {count} ({count/len(y)*100:.1f}%)")
-        
-        return X, y, disaster_types
-    
-    def save_processed_data(self, X, y, disaster_types, filename="processed_sar_data.npz"):
-        """Save processed data for model training"""
-        np.savez_compressed(
-            filename,
-            features=X,
-            labels=y,
-            disaster_types=disaster_types,
-            feature_names=self.get_feature_names()
-        )
-        print(f"\nProcessed data saved to: {filename}")
-        
-        metadata = {
-            'total_samples': len(X),
-            'feature_count': X.shape[1] if len(X) > 0 else 0,
-            'disaster_types': list(set(disaster_types)),
-            'class_distribution': {
-                int(k): int(v) for k, v in zip(*np.unique(y, return_counts=True))
-            } if len(y) > 0 else {},
-            'processing_date': str(np.datetime64('now')),
-            'data_sources': [
-                'NASA GOES Forest Fire Data',
-                'Water Bodies Flood Dataset', 
-                'Urban Heat Island Data',
-                'Urban Classification Dataset'
-            ]
-        }
-        
-        with open(filename.replace('.npz', '_metadata.json'), 'w') as f:
-            json.dump(metadata, f, indent=2)
-        
-        return metadata
-    
-    def get_feature_names(self):
-        """Get feature names for the extracted features"""
-        base_features = [
+        # Feature names
+        feature_names = [
             'mean_intensity', 'std_intensity', 'min_intensity', 'max_intensity', 'median_intensity',
             'glcm_homogeneity', 'glcm_energy', 'glcm_entropy', 'glcm_contrast', 'glcm_correlation',
-            'gradient_mean', 'gradient_std',
-            'fft_mean', 'fft_std',
-            'domain_specific_feature'
+            'gradient_mean', 'gradient_std', 'fft_mean', 'fft_std', 'domain_specific_feature'
         ]
-        return base_features
+        
+        # Save processed data
+        np.savez('comprehensive_sar_data.npz',
+                features=X_all,
+                labels=y_all,
+                disaster_types=types_all,
+                feature_names=feature_names)
+        
+        logger.info("\n" + "="*80)
+        logger.info("DATA PROCESSING COMPLETE")
+        logger.info("="*80)
+        logger.info(f"Total samples: {len(X_all)}")
+        logger.info(f"Features per sample: {X_all.shape[1]}")
+        logger.info(f"\nClass distribution:")
+        class_dist = Counter(y_all)
+        class_names = list(self.disaster_types.keys())
+        for label in sorted(class_dist.keys()):
+            logger.info(f"  [{label}] {class_names[label]}: {class_dist[label]} samples")
+        logger.info(f"\nSaved to: comprehensive_sar_data.npz")
+        logger.info("="*80)
+        
+        return True
 
 def main():
-    """Enhanced main processing pipeline"""
-    print("="*60)
-    print("ENHANCED SAR DATA PROCESSING FOR CLIMATE DISASTER PREDICTION")
-    print("="*60)
+    """Main processing pipeline"""
+    logger.info("="*80)
+    logger.info("NASA SPACE APPS CHALLENGE 2025 - DATA PROCESSING")
+    logger.info("9 DISASTER TYPES: Flood, Urban Heat, Fire, Deforestation,")
+    logger.info("                  Drought, Tsunami, Landslide, Cyclone, Volcanic")
+    logger.info("="*80)
     
-    processor = SARDataProcessor()
+    processor = AdvancedSARDataProcessor()
     
-    if not processor.verify_data_paths():
-        print("\n⚠️ No data found. Please check your data paths and try again.")
+    # Verify datasets
+    logger.info("\nStep 1: Verifying datasets...")
+    valid, summary = processor.verify_all_datasets()
+    
+    if not valid:
+        logger.error("\nNo data found. Please check data directories.")
+        logger.error(f"Expected base path: {processor.base_path}")
+        logger.error("\nEnsure your data is in one of these locations:")
+        logger.error("  - E:\\Echo Explorer\\NASA SAR Data\\")
+        logger.error("  - E:\\Nasa Space Apps Challenge- 2025\\Echo Explorer\\NASA SAR Data\\")
         return
     
-    X, y, disaster_types = processor.create_integrated_dataset(limit_per_type=100)
+    # Process all data
+    logger.info("\nStep 2: Processing datasets...")
+    success = processor.process_all_data()
     
-    if len(X) > 0:
-        metadata = processor.save_processed_data(X, y, disaster_types)
-        print(f"\n" + "="*60)
-        print("ENHANCED DATA PROCESSING COMPLETED")
-        print("="*60)
-        print(f"Dataset ready for model training!")
-        print(f"Samples: {metadata['total_samples']}")
-        print(f"Features: {metadata['feature_count']}")
-        print(f"Classes: {list(metadata['class_distribution'].keys())}")
-        print(f"Data Sources: {len(metadata['data_sources'])}")
+    if success:
+        logger.info("\n" + "="*80)
+        logger.info("SUCCESS!")
+        logger.info("="*80)
+        logger.info("Next step: Run 'python model_trainer.py' to train the model")
+        logger.info("="*80)
     else:
-        print("\n⚠️ No data could be processed. Please check data paths and file formats.")
+        logger.error("\nData processing failed")
 
 if __name__ == "__main__":
     main()
