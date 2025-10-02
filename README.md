@@ -376,24 +376,236 @@ pip install -r requirements.txt
 
 Ensure your project follows this structure:
 
+# 🌍 Echo Explorer – Project Structure
+
+## 📁 Complete Directory Structure
+
 ```
 echo-explorer/
-├── app.py                 # Main Flask application
-├── data_processor.py      # SAR data processing pipeline
-├── model_trainer.py       # ML model training and evaluation
-├── requirements.txt       # Python dependencies
+├── app.py                          # Main Flask application
+├── data_processor.py               # SAR data processing pipeline
+├── model_trainer.py                # ML model training and evaluation
+├── requirements.txt                # Python dependencies
+├── README.md                       # Project documentation
 ├── templates/
-│   └── index.html        # Main web interface
+│   ├── index.html                 # Main web interface
+│   ├── dashboard.html             # Climate disaster dashboard
+│   └── prediction.html            # Risk prediction interface
 ├── static/
 │   ├── css/
+│   │   ├── main.css
+│   │   └── dashboard.css
 │   ├── js/
-│   └── assets/           # Images and media files
-└── data/                 # NASA SAR datasets (create this folder)
-    ├── forest_fire/
-    ├── flood_data/
-    ├── urban_heat/
-    └── urban_classification/
+│   │   ├── map.js                # Interactive map visualization
+│   │   ├── charts.js             # Data visualization charts
+│   │   └── prediction.js         # Real-time prediction updates
+│   └── assets/                    # Images and media files
+│       ├── icons/
+│       └── maps/
+├── models/                         # Trained ML models
+│   ├── flood_model.pkl
+│   ├── fire_model.pkl
+│   ├── cyclone_model.pkl
+│   └── uhi_model.pkl
+├── notebooks/                      # Jupyter notebooks for analysis
+│   ├── data_exploration.ipynb
+│   └── model_evaluation.ipynb
+└── NASA SAR Data/                  # NASA Earthdata datasets
+    │
+    ├── WaterBodies Dataset(flood)/
+    │   └── data/                  # Water body detection data (.jpg)
+    │
+    ├── Water Bodies Dataset/       # Additional water body imagery (.jpg)
+    │
+    ├── Flood & Cyclone (SENTINEL-1B_SINGLE_POL_METADATA_GRD_HIGH_RES)/
+    │   └── *.tif                  # Sentinel-1B SAR imagery (5 files)
+    │
+    ├── SMAPSentinel-1 L2 RadiometerRadar 30-Second Scene 3 km EASE-Grid Soil Moisture V003/
+    │   └── *.h5                   # SMAP soil moisture data
+    │       └── SMAP_L2_SM_SP_1AIWDV_20250924T142712_20250923T135925_118W39N_R19240_001.h5
+    │
+    ├── Floods & Draught/
+    │   ├── comp/                  # Comparative analysis (4 CSV files)
+    │   │   └── *.csv
+    │   ├── FEWS_precip_711/       # Precipitation data
+    │   │   └── *.img
+    │   ├── IMERG_Precip_Canada_Alaska_2097/
+    │   │   └── *.if               # IMERG precipitation files
+    │   └── GRACEDADM_CLSM025GL_7D/
+    │       ├── *.nc4              # GRACE land data assimilation
+    │       ├── GRACEDADM_CLSM025GL_7D.A20231225.030.nc4
+    │       ├── subset_GRACEDADM_CLSM025GL_7D_3.0_20251001_061142_.txt  # ~1100 file links
+    │       └── *.bsq              # Band sequential format (africa_gba2000-01.bsq)
+    │
+    ├── forest fire(LBA-ECO LC-35 GOES Imager)/
+    │   └── data/
+    │       └── *.filt             # GOES fire detection data
+    │           └── f20000011245.samer.v60.g8.filt
+    │
+    ├── Global_fire_atlas_V1_ignitions_2016/
+    │   ├── Global_fire_atlas_V1_ignitions_2016.dbf
+    │   ├── Global_fire_atlas_V1_ignitions_2016.prj
+    │   ├── Global_fire_atlas_V1_ignitions_2016.shp
+    │   └── Global_fire_atlas_V1_ignitions_2016.shx
+    │
+    ├── LC39_MODIS_Fire_SA_1186/
+    │   └── data/
+    │       ├── sa_2000_2001_terra_subset.dbf
+    │       ├── sa_2000_2001_terra_subset.prj
+    │       ├── sa_2000_2001_terra_subset.sbn
+    │       ├── sa_2000_2001_terra_subset.sbx
+    │       ├── sa_2000_2001_terra_subset.shp
+    │       ├── sa_2000_2001_terra_subset.shp.xml
+    │       ├── sa_2000_2001_terra_subset.shx
+    │       └── sa0001_terra_neighborhood_variety.tif
+    │
+    ├── CMS_Global_Fire_Atlas_1642/
+    │   └── data/
+    │       ├── *.tif              # Fire atlas GeoTIFF
+    │       ├── *.shp              # Fire perimeter shapefiles
+    │       ├── *.shx
+    │       └── *.dbf
+    │
+    ├── Maryland_Temperature_Humidity_1319/
+    │   └── data/
+    │       └── *.csv              # Temperature & humidity data
+    │           └── RelativeHumidity_20130905-20130918_preCal_office.csv
+    │
+    ├── urban heat island/
+    │   ├── Summer_UHI_yearly_pixel_2003.tif
+    │   ├── Summer_UHI_yearly_pixel_2003.tif.aux.xml
+    │   ├── Summer_UHI_yearly_pixel_2003.tif.ovr
+    │   ├── Summer_UHI_yearly_pixel_2006.tif
+    │   └── Summer_UHI_yearly_pixel_2006.tif.ovr
+    │
+    ├── urban heat island data/
+    │   └── TrainArea_001.tif      # UHI training data
+    │
+    ├── sdei-global-uhi-2013/
+    │   ├── sdei-global-uhi-2013.CPG
+    │   ├── sdei-global-uhi-2013.dbf
+    │   ├── sdei-global-uhi-2013.prj
+    │   ├── sdei-global-uhi-2013.shp
+    │   ├── sdei-global-uhi-2013.shp.xml
+    │   └── sdei-global-uhi-2013.shx
+    │
+    ├── sdei-yceo-sfc-uhi-v4-urban-cluster-means-shp/
+    │   ├── *.CPG
+    │   ├── *.dbf
+    │   ├── *.prj
+    │   ├── *.shp
+    │   └── *.sbx
+    │
+    ├── CycloneHurricane-TISAavg_SampleRead_SYN1deg_R5-922/
+    │   └── [CERES atmospheric flux data]
+    │
+    ├── TISAavg_SampleRead_SYN1deg_R5-922 (1)/  # 3-hour temporal resolution
+    │   ├── CER_SYN1deg-3Hour_Sample_R5V1
+    │   ├── CER_SYN1deg-3Hour_Sample_R5V1.dump
+    │   ├── CER_SYN1deg-3Hour_Sample_R5V1.met
+    │   ├── CER_SYN1deg-3Hour_Sample_R5V1.output
+    │   ├── CER_SYN1deg-M3Hour_Sample_R5V1.dump
+    │   └── SYN1deg_HDFread.h
+    │
+    ├── Tsunami-Jason-3 GPS based orbit and SSHA OGDR/
+    │   └── *.nc                   # Jason-3 sea surface height data
+    │       └── JA3_GPSOPR_2PgS609_209_20250921_175932_20250921_195515.nc
+    │
+    └── HLS Landsat Operational Land Imager Surface/
+        └── *.tif                  # Landsat surface reflectance
 ```
+
+---
+
+## 🗂️ Dataset Organization by Disaster Type
+
+### 🌊 Flood & Drought (7 datasets)
+```
+NASA SAR Data/
+├── WaterBodies Dataset(flood)/data/
+├── Water Bodies Dataset/
+├── Flood & Cyclone (SENTINEL-1B_SINGLE_POL_METADATA_GRD_HIGH_RES)/
+├── SMAPSentinel-1 L2 RadiometerRadar.../
+└── Floods & Draught/
+    ├── comp/
+    ├── FEWS_precip_711/
+    ├── IMERG_Precip_Canada_Alaska_2097/
+    └── GRACEDADM_CLSM025GL_7D/
+```
+
+### 🔥 Forest Fire & Deforestation (4 datasets)
+```
+NASA SAR Data/
+├── forest fire(LBA-ECO LC-35 GOES Imager)/data/
+├── Global_fire_atlas_V1_ignitions_2016/
+├── LC39_MODIS_Fire_SA_1186/data/
+├── CMS_Global_Fire_Atlas_1642/data/
+└── Maryland_Temperature_Humidity_1319/data/  # Supporting climate data
+```
+
+### 🌡️ Urban Heat Island (4 datasets)
+```
+NASA SAR Data/
+├── urban heat island/
+├── urban heat island data/
+├── sdei-global-uhi-2013/
+└── sdei-yceo-sfc-uhi-v4-urban-cluster-means-shp/
+```
+
+### 🌀 Cyclone/Hurricane (2 datasets)
+```
+NASA SAR Data/
+├── CycloneHurricane-TISAavg_SampleRead_SYN1deg_R5-922/
+└── TISAavg_SampleRead_SYN1deg_R5-922 (1)/  # 3-hour data
+```
+
+### 🌊 Tsunami (1 dataset)
+```
+NASA SAR Data/
+└── Tsunami-Jason-3 GPS-based orbit and SSHA OGDR/
+```
+
+### 🏔️ Landslide Monitoring (1 dataset)
+```
+NASA SAR Data/
+└── HLS Landsat Operational Land Imager Surface/
+```
+
+---
+
+## 📊 File Format Summary
+
+| Format | Count | Primary Use | Example Files |
+|--------|-------|-------------|---------------|
+| `.tif/.tiff` | ~15+ | Raster imagery | UHI data, fire data, SAR imagery |
+| `.shp/.shx/.dbf/.prj` | ~12+ | Vector data | Fire perimeters, UHI boundaries |
+| `.nc/.nc4` | ~3+ | Climate model data | GRACE data, Jason-3 tsunami data |
+| `.h5` | ~2+ | Multi-dimensional data | SMAP soil moisture |
+| `.csv` | ~5+ | Tabular data | Temperature, humidity, comparison data |
+| `.img` | ~5+ | Precipitation raster | FEWS precipitation |
+| `.if` | ~3+ | Image format | IMERG precipitation |
+| `.bsq` | ~2+ | Band sequential | Africa land data |
+| `.filt` | ~10+ | Filtered fire data | GOES fire detection |
+| `.jpg` | ~20+ | Visual imagery | Water body photos |
+
+---
+
+
+
+
+
+
+---
+
+## 📝 Notes
+
+- **Total Dataset Size:** ~50-100 GB (depending on extracted data)
+- **Processing Requirements:** 16GB+ RAM recommended for large raster processing
+- **GPU Recommended:** For ML model training (especially deep learning)
+- **Disk Space:** Minimum 150 GB free space (including processed outputs)
+
+---
+
 
 ### 5. Data Preparation
 
@@ -447,18 +659,7 @@ Navigate to `http://localhost:5000` in your web browser.
    - Enter manual feature values
 4. **View Results**: Receive detailed risk assessment with confidence scores
 
-### API Endpoints
 
-```python
-# Prediction endpoint
-POST /predict
-Content-Type: multipart/form-data
-
-# Parameters:
-# - image: SAR image file (optional)
-# - features: comma-separated feature values (optional)
-# - data_type: 'forest', 'wetland', or 'urban'
-```
 
 ### Feature Input Format
 
@@ -490,11 +691,7 @@ python data_processor.py --verify
 
 ## 🔍 Supported File Formats
 
-### SAR Data Formats
 
-- **.filt**: NASA GOES Imager format (specialized binary)
-- **.tif/.tiff**: GeoTIFF satellite imagery
-- **.jpg/.png**: Standard image formats (converted from SAR)
 
 ### Feature Specifications
 
@@ -584,11 +781,16 @@ Edit `model_trainer.py` to adjust:
 - [ ] Automated model retraining pipeline
 
 
-##  Acknowledgments
+## Acknowledgments
 
-- **NASA Space Apps Challenge 2025** for the opportunity and datasets
-- **NASA Earth Science Division** for SAR data access
-- **Open Source Community** for excellent Python libraries
+We extend our sincere gratitude to the following organizations, communities, and tools that made this project possible:
+
+- **NASA Space Apps Challenge 2025** for providing an inspiring platform and access to invaluable datasets that fueled our innovation.
+- **NASA Earth Science Division** for facilitating access to Synthetic Aperture Radar (SAR) data, enabling critical analysis of environmental phenomena.
+- **Open Source Community** for developing and maintaining exceptional Python libraries, which formed the backbone of our technical implementation.
+- **Grok AI by xAI** for its invaluable assistance throughout the process, including identifying and recommending appropriate datasets for climate disaster modeling, guiding color palette selections for optimal front-end visualization, and troubleshooting errors in our `app.py` script to ensure seamless functionality.
+
+This project would not have been possible without these contributions, and we are deeply appreciative of the collaborative spirit that drives space exploration and Earth science innovation.
 
 ## 📞 Contact & Support
 
