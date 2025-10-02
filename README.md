@@ -731,6 +731,9 @@ Model                     Accuracy    F1-Score    CV Mean
 -------------------------------------------------------------
 Random Forest            0.XXXX      0.XXXX      0.XXXX
 Gradient Boosting        0.XXXX      0.XXXX      0.XXXX
+Logistic Regression      0.XXXX      0.XXXX      0.XXXX
+Neural Network           0.XXXX      0.XXXX      0.XXXX
+SVM                      0.XXXX      0.XXXX      0.XXXX
 ...
 
 Best Model: Random Forest
