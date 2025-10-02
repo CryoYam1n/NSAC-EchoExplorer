@@ -8,605 +8,831 @@ from PIL import Image as PilImage
 import cv2
 from werkzeug.utils import secure_filename
 import os
+import h5py
+import struct
+import warnings
 
+try:
+    import geopandas as gpd
+    from shapely.geometry import box
+    import rasterio
+    from rasterio.features import rasterize
+    GEOPANDAS_AVAILABLE = RASTERIO_AVAILABLE = True
+except ImportError:
+    GEOPANDAS_AVAILABLE = RASTERIO_AVAILABLE = False
+    print("Warning: Geopandas or Rasterio not available")
 
-from data_processor import SARDataProcessor
+try:
+    from osgeo import gdal
+    GDAL_AVAILABLE = True
+except ImportError:
+    GDAL_AVAILABLE = False
+    print("Warning: GDAL not available")
 
+try:
+    import netCDF4 as nc
+    NETCDF_AVAILABLE = True
+except ImportError:
+    NETCDF_AVAILABLE = False
+    print("Warning: NetCDF4 not available")
 
-logging.basicConfig(level=logging.INFO)
+warnings.filterwarnings('ignore')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB for larger SAR files
-ALLOWED_EXTENSIONS = {'jpg', 'png', 'tif', 'tiff', 'filt'}  # .filt for GOES data
+app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 500MB
+app.config['UPLOAD_FOLDER'] = 'temp_uploads'
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-class EnhancedClimateDisasterApp:
+ALLOWED_EXTENSIONS = {'jpg', 'png', 'tif', 'tiff', 'filt', 'h5', 'hdf5', 'bsq', 'shp', 'nc', 'nc4', 'img'}
+
+class AdvancedClimateDisasterApp:
     def __init__(self):
         self.model = None
         self.scaler = None
         self.metadata = None
-        self.processor = SARDataProcessor()
+        self.feature_names = []
+        self.image_size = (256, 256)
+        self.max_pixels = 10_000_000
         self.load_models()
-    
+
     def load_models(self):
-        """Load trained model and preprocessing components with enhanced error handling"""
+        """Load trained models with enhanced error handling"""
         try:
             with open('climate_disaster_model.pkl', 'rb') as f:
                 self.model = pickle.load(f)
-            logger.info("Enhanced climate disaster model loaded successfully")
-            
+            logger.info("Model loaded successfully")
+
             with open('climate_scaler.pkl', 'rb') as f:
                 self.scaler = pickle.load(f)
-            logger.info("Feature scaler loaded successfully")
-            
+            logger.info("Scaler loaded successfully")
+
             with open('climate_model_metadata.json', 'r') as f:
                 self.metadata = json.load(f)
-            logger.info("Model metadata loaded successfully")
-            
-            logger.info(f"Model type: {self.metadata.get('model_type', 'Unknown')}")
-            logger.info(f"Number of features: {self.metadata.get('n_features', 0)}")
-            logger.info(f"Number of classes: {self.metadata.get('n_classes', 0)}")
-            
+                self.feature_names = self.metadata.get('feature_names', [])
+            logger.info(f"Metadata loaded: {self.metadata.get('model_type', 'Unknown')}")
+            logger.info(f"Model supports: {self.metadata.get('n_features', 'Unknown')} features")
+            logger.info(f"Classes: {self.metadata.get('n_classes', 'Unknown')} disaster types")
+
         except FileNotFoundError as e:
             logger.error(f"Model files not found: {e}")
-            logger.error("Please run the updated model_trainer.py first to train the models")
+            logger.error("Please run: python model_trainer.py")
+            self.metadata = {
+                'n_features': 15,
+                'n_classes': 9,  
+                'class_names': [
+                    'Flood', 'Urban Heat Risk', 'Forest Fire', 'Deforestation',
+                    'Drought', 'Tsunami', 'Landslide Monitoring', 'Cyclone/Hurricane',
+                    'Volcanic Eruption'  
+                ],
+                'model_type': 'Not Trained - Please Run model_trainer.py',
+                'training_date': 'N/A',
+                'version': 'Not Available',
+                'label_mapping': {
+                    '0': 'Flood',
+                    '1': 'Urban Heat Risk',
+                    '2': 'Forest Fire',
+                    '3': 'Deforestation',
+                    '4': 'Drought',
+                    '5': 'Tsunami',
+                    '6': 'Landslide Monitoring',
+                    '7': 'Cyclone/Hurricane',
+                    '8': 'Volcanic Eruption'  # ADDED
+                }
+            }
+            self.feature_names = [
+                'mean_intensity', 'std_intensity', 'min_intensity', 'max_intensity', 'median_intensity',
+                'glcm_homogeneity', 'glcm_energy', 'glcm_entropy', 'glcm_contrast', 'glcm_correlation',
+                'gradient_mean', 'gradient_std', 'fft_mean', 'fft_std', 'domain_specific_feature'
+            ]
         except Exception as e:
             logger.error(f"Error loading models: {str(e)}")
-    
+
     def allowed_file(self, filename):
         """Check if file extension is allowed"""
         return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-    
-    def read_special_format(self, file_path):
-        """Read special SAR formats like .filt files"""
+
+    def read_h5_file(self, file_path):
+        """Read HDF5/H5 files"""
         try:
-            if file_path.suffix.lower() == '.filt':
-                return self.processor.read_filt_file(file_path)
-            else:
-                img = self.load_image(file_path)
-                return img
+            with h5py.File(file_path, 'r') as f:
+                def extract_data(obj, depth=0):
+                    if depth > 5:
+                        return None
+                    if isinstance(obj, h5py.Dataset):
+                        try:
+                            data = obj[()]
+                            if isinstance(data, np.ndarray) and data.size > 0:
+                                return data
+                        except:
+                            pass
+                    elif isinstance(obj, h5py.Group):
+                        for key in obj.keys():
+                            result = extract_data(obj[key], depth + 1)
+                            if result is not None:
+                                return result
+                    return None
+                data = extract_data(f)
+                return self._normalize_array(data) if data is not None else None
         except Exception as e:
-            logger.error(f"Error reading special format file: {e}")
+            logger.error(f"Error reading H5 file {file_path}: {e}")
+        return None
+
+    def read_nc4_file(self, file_path):
+        """Read NetCDF4 files"""
+        if not NETCDF_AVAILABLE:
+            logger.warning("NetCDF4 not available, falling back to H5 reader")
+            return self.read_h5_file(file_path)
+        try:
+            with nc.Dataset(file_path, 'r') as dataset:
+                priority_vars = ['lwe_thickness', 'soil_moisture', 'ssha',
+                               'sea_surface_height', 'precipitation', 'data', 'value']
+                for var_name in priority_vars:
+                    if var_name in dataset.variables:
+                        data = dataset.variables[var_name][:]
+                        return self._normalize_array(data)
+                if len(dataset.variables) > 0:
+                    first_var = list(dataset.variables.keys())[0]
+                    data = dataset.variables[first_var][:]
+                    return self._normalize_array(data)
+        except Exception as e:
+            logger.error(f"Error reading NC4 file {file_path}: {e}")
+            return self.read_h5_file(file_path)
+        return None
+
+    def read_bsq_file(self, file_path):
+        """Read BSQ/IMG files"""
+        if GDAL_AVAILABLE:
+            try:
+                dataset = gdal.Open(str(file_path))
+                if dataset:
+                    band = dataset.GetRasterBand(1)
+                    return self._normalize_array(band.ReadAsArray())
+            except Exception as e:
+                logger.warning(f"GDAL failed for BSQ {file_path}: {e}")
+        try:
+            with open(file_path, 'rb') as f:
+                data = f.read()
+                if len(data) % 4 == 0:
+                    values = struct.unpack(f'>{len(data)//4}f', data)
+                    size = int(np.sqrt(len(values)))
+                    if size * size == len(values):
+                        return self._normalize_array(np.array(values).reshape(size, size))
+        except Exception as e:
+            logger.error(f"Error reading BSQ file {file_path}: {e}")
+        return None
+
+    def read_filt_file(self, file_path):
+        """Read NASA GOES .filt format files"""
+        try:
+            with open(file_path, 'rb') as f:
+                data = f.read()
+                for dtype, fmt in [(np.float32, 'f'), (np.float64, 'd'), (np.uint16, 'H')]:
+                    element_size = np.dtype(dtype).itemsize
+                    if len(data) % element_size == 0:
+                        try:
+                            values = struct.unpack(f'>{len(data)//element_size}{fmt}', data)
+                            size = int(np.sqrt(len(values)))
+                            if size * size == len(values):
+                                return self._normalize_array(np.array(values).reshape(size, size))
+                        except:
+                            continue
+                img_array = np.frombuffer(data, dtype=np.uint8)
+                size = int(np.sqrt(len(img_array)))
+                if size * size <= len(img_array):
+                    return img_array[:size*size].reshape(size, size)
+        except Exception as e:
+            logger.error(f"Error reading FILT file {file_path}: {e}")
+        return None
+
+    def read_shapefile(self, file_path):
+        """Read shapefiles and rasterize to image"""
+        if not GEOPANDAS_AVAILABLE or not RASTERIO_AVAILABLE:
+            logger.warning("Geopandas or Rasterio not available for shapefile processing")
             return None
-    
-    def load_image(self, file_path):
-        """Load image using PIL first, fallback to cv2"""
         try:
-            pil_img = PilImage.open(str(file_path))
-            img = np.array(pil_img.convert('L'))
-            return img
+            gdf = gpd.read_file(file_path)
+            if gdf.empty:
+                logger.warning(f"Empty shapefile: {file_path}")
+                return None
+            bounds = gdf.total_bounds
+            width, height = self.image_size
+            transform = rasterio.transform.from_bounds(bounds[0], bounds[1], bounds[2], bounds[3], width, height)
+            shapes = [(geom, 1) for geom in gdf.geometry if geom is not None]
+            if not shapes:
+                return None
+            img_array = rasterize(shapes, out_shape=(height, width), transform=transform, fill=0, dtype=np.uint8)
+            return img_array
         except Exception as e:
-            logger.warning(f"PIL failed for {file_path}: {e}. Falling back to cv2.")
+            logger.error(f"Error reading shapefile {file_path}: {e}")
+        return None
+
+    def read_geotiff(self, file_path):
+        """Read GeoTIFF files using rasterio, GDAL, PIL, or cv2"""
+        try:
+            file_size = os.path.getsize(file_path) / (1024 * 1024)
+            if not os.access(file_path, os.R_OK):
+                logger.error(f"Permission denied for {file_path}")
+                return None
+            if RASTERIO_AVAILABLE:
+                try:
+                    with rasterio.open(file_path) as src:
+                        data = src.read(1)
+                        return self._normalize_array(data)
+                except Exception as e:
+                    logger.warning(f"Rasterio failed for {file_path}: {e}")
+            if GDAL_AVAILABLE:
+                try:
+                    dataset = gdal.Open(str(file_path))
+                    if dataset:
+                        band = dataset.GetRasterBand(1)
+                        data = band.ReadAsArray()
+                        return self._normalize_array(data)
+                except Exception as e:
+                    logger.warning(f"GDAL failed for {file_path}: {e}")
+            try:
+                with PilImage.open(file_path) as img:
+                    if img.size[0] * img.size[1] > self.max_pixels:
+                        ratio = np.sqrt(self.max_pixels / (img.size[0] * img.size[1]))
+                        new_size = (int(img.size[0] * ratio), int(img.size[1] * ratio))
+                        img = img.resize(new_size, PilImage.LANCZOS)
+                    if img.mode != 'L':
+                        img = img.convert('L')
+                    return np.array(img)
+            except Exception as e:
+                logger.warning(f"PIL failed for {file_path}: {e}")
             try:
                 img = cv2.imread(str(file_path), cv2.IMREAD_GRAYSCALE)
-                return img
+                if img is not None:
+                    return img
             except Exception as e:
-                logger.error(f"cv2 failed for {file_path}: {e}")
-                return None
-    
-    def process_image(self, file, data_type='forest'):
-        """Enhanced SAR image processing with support for multiple formats"""
+                logger.error(f"OpenCV failed for {file_path}: {e}")
+            logger.error(f"Failed to read TIFF file {file_path} (size: {file_size:.2f} MB)")
+            return None
+        except Exception as e:
+            logger.error(f"Error reading TIFF file {file_path}: {e}")
+        return None
+
+    def load_image(self, file_path):
+        """Load standard images using PIL/OpenCV"""
+        try:
+            pil_img = PilImage.open(str(file_path))
+            if pil_img.mode == 'RGBA':
+                pil_img = pil_img.convert('RGB')
+            if pil_img.mode != 'L':
+                pil_img = pil_img.convert('L')
+            img = np.array(pil_img)
+            return img
+        except Exception:
+            try:
+                img = cv2.imread(str(file_path), cv2.IMREAD_GRAYSCALE)
+                if img is not None:
+                    return img
+            except Exception as e:
+                logger.error(f"Error loading image {file_path}: {e}")
+        return None
+
+    def _normalize_array(self, data):
+        """Normalize array to 0-255 uint8"""
+        if data is None or data.size == 0:
+            return None
+        data = np.nan_to_num(data, nan=0.0, posinf=0.0, neginf=0.0)
+        if data.ndim > 2:
+            data = data[0] if data.shape[0] == 1 else data.mean(axis=0)
+        if data.max() == data.min():
+            return np.zeros(self.image_size, dtype=np.uint8)
+        normalized = ((data - data.min()) / (data.max() - data.min()) * 255).astype(np.uint8)
+        if normalized.shape != self.image_size:
+            try:
+                normalized = cv2.resize(normalized, self.image_size, interpolation=cv2.INTER_AREA)
+            except:
+                return np.zeros(self.image_size, dtype=np.uint8)
+        return normalized
+
+    def process_uploaded_file(self, file, data_type='auto'):
+        """Process uploaded file"""
         try:
             filename = secure_filename(file.filename)
             if not self.allowed_file(filename):
-                raise ValueError("Invalid file type. Only jpg, png, tif, tiff, filt allowed.")
-            
-            temp_path = f"temp_{filename}"
+                raise ValueError(f"Invalid file type: {filename}")
+            temp_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(temp_path)
-            
             try:
-                if filename.lower().endswith('.filt'):
-                    img = self.processor.read_filt_file(temp_path)
-                else:
+                file_size = os.path.getsize(temp_path) / (1024 * 1024)
+                if file_size > 500:
+                    raise ValueError(f"File too large: {file_size:.2f} MB exceeds 500 MB limit")
+                ext = filename.rsplit('.', 1)[1].lower()
+                img = None
+                if ext in ['h5', 'hdf5']:
+                    img = self.read_h5_file(temp_path)
+                elif ext in ['nc', 'nc4']:
+                    img = self.read_nc4_file(temp_path)
+                elif ext in ['bsq', 'img']:
+                    img = self.read_bsq_file(temp_path)
+                elif ext == 'filt':
+                    img = self.read_filt_file(temp_path)
+                elif ext in ['tif', 'tiff']:
+                    img = self.read_geotiff(temp_path)
+                elif ext == 'shp':
+                    img = self.read_shapefile(temp_path)
+                elif ext in ['jpg', 'png']:
                     img = self.load_image(temp_path)
-                
                 if img is None:
-                    raise ValueError("Could not load image. Please check file format.")
-                
-                img = cv2.resize(img, (256, 256))
-                
-                features = self.processor.extract_sar_features(img, data_type)
-                
+                    raise ValueError("Could not process the uploaded file")
+                if img.shape != self.image_size:
+                    img = cv2.resize(img, self.image_size, interpolation=cv2.INTER_AREA)
+                context_map = {
+                    'flood': 'flood',
+                    'drought': 'flood',
+                    'urban_heat_risk': 'urban',
+                    'forest_fire': 'fire',
+                    'deforestation': 'fire',
+                    'tsunami': 'weather',
+                    'landslide_monitoring': 'weather',
+                    'cyclone_hurricane': 'weather',
+                    'volcanic_eruption': 'volcanic',  # ADDED
+                    'auto': 'weather'
+                }
+                context = context_map.get(data_type.lower().replace(' ', '_'), 'weather')
+                features = self.extract_sar_features(img, context, data_type)
                 return np.array(features)
-                
             finally:
                 if os.path.exists(temp_path):
                     os.remove(temp_path)
-                    
         except Exception as e:
-            logger.error(f"Image processing error: {str(e)}")
+            logger.error(f"File processing error: {str(e)}")
             return None
-    
+
+    def extract_sar_features(self, image, context, data_type):
+        """Extract exactly 15 SAR features - CORRECTED for 9 disaster types"""
+        features = []
+        if image is None or image.size == 0:
+            return [0.0] * 15
+        features.extend([
+            float(np.mean(image)),
+            float(np.std(image)),
+            float(np.min(image)),
+            float(np.max(image)),
+            float(np.median(image))
+        ])
+        kernel = np.array([[1, 1, 1], [1, 0, 1], [1, 1, 1]], dtype=np.float32)
+        local_patterns = cv2.filter2D(image.astype(np.float32), -1, kernel)
+        contrast = float(np.var(image))
+        homogeneity = float(1.0 / (1.0 + contrast))
+        hist, _ = np.histogram(image, bins=256, range=(0, 256))
+        hist = hist / (hist.sum() + 1e-10)
+        energy = float(np.sum(hist ** 2))
+        entropy = float(-np.sum(hist * np.log(hist + 1e-10)))
+        correlation = np.corrcoef(image.flatten(), local_patterns.flatten())[0, 1]
+        correlation = 0.0 if np.isnan(correlation) else float(abs(correlation))
+        features.extend([homogeneity, energy, entropy, contrast, correlation])
+        grad_x = cv2.Sobel(image, cv2.CV_64F, 1, 0, ksize=3)
+        grad_y = cv2.Sobel(image, cv2.CV_64F, 0, 1, ksize=3)
+        gradient_magnitude = np.sqrt(grad_x**2 + grad_y**2)
+        features.extend([
+            float(np.mean(gradient_magnitude)),
+            float(np.std(gradient_magnitude))
+        ])
+        fft = np.fft.fft2(image)
+        fft_magnitude = np.abs(fft)
+        features.extend([
+            float(np.mean(fft_magnitude)),
+            float(np.std(fft_magnitude))
+        ])
+        normalized = image.astype(np.float32) / 255.0
+        data_type_lower = data_type.lower().replace(' ', '_')
+        
+        if context == 'fire' or data_type_lower in ['forest_fire', 'deforestation']:
+            dark_areas = np.mean(normalized < 0.3)
+            medium_areas = np.mean((normalized >= 0.3) & (normalized < 0.7))
+            domain_feature = 0.6 * dark_areas + 0.3 * medium_areas + 0.1 * (1 - np.mean(normalized))
+        elif context == 'flood' or data_type_lower in ['flood', 'drought']:
+            very_dark = np.sum(normalized < 0.15)
+            moderately_dark = np.sum((normalized >= 0.15) & (normalized < 0.25))
+            domain_feature = min((0.8 * very_dark + 0.3 * moderately_dark) / image.size, 1.0)
+        elif context == 'urban' or data_type_lower == 'urban_heat_risk':
+            very_bright = np.sum(normalized > 0.7)
+            moderately_bright = np.sum((normalized >= 0.5) & (normalized <= 0.7))
+            domain_feature = min((0.9 * very_bright + 0.4 * moderately_bright) / image.size, 1.0)
+        elif data_type_lower == 'tsunami':
+            very_dark = np.sum(normalized < 0.2)
+            domain_feature = min(0.9 * very_dark / image.size, 1.0)
+        elif data_type_lower == 'landslide_monitoring':
+            domain_feature = float(np.mean(gradient_magnitude > np.percentile(gradient_magnitude, 75)))
+        elif data_type_lower == 'cyclone_hurricane':
+            domain_feature = float(np.var(normalized))
+        elif context == 'volcanic' or data_type_lower == 'volcanic_eruption':  # ADDED
+            very_bright = np.sum(normalized > 0.8)
+            texture_var = float(np.std(local_patterns))
+            domain_feature = min((0.7 * very_bright / image.size) + (0.3 * texture_var / 255.0), 1.0)
+        else:
+            domain_feature = float(np.mean(normalized))
+        
+        features.append(float(domain_feature))
+        if len(features) != 15:
+            logger.error(f"Feature count mismatch: {len(features)} instead of 15")
+            return [0.0] * 15
+        return features
+
     def predict_risk(self, features):
-        """Make enhanced disaster risk prediction with confidence scoring"""
+        """Make prediction with confidence scores"""
         if self.model is None or self.scaler is None:
             return None
-        
         try:
             if features.ndim == 1:
                 features = features.reshape(1, -1)
-            
             expected_features = self.metadata.get('n_features', 15)
             if features.shape[1] != expected_features:
-                logger.warning(f"Feature count mismatch: expected {expected_features}, got {features.shape[1]}")
+                logger.warning(f"Feature dimension mismatch: {features.shape[1]} vs {expected_features}")
                 if features.shape[1] < expected_features:
                     padding = np.zeros((features.shape[0], expected_features - features.shape[1]))
                     features = np.hstack([features, padding])
                 else:
                     features = features[:, :expected_features]
-            
             features_scaled = self.scaler.transform(features)
-            
             prediction = self.model.predict(features_scaled)[0]
-            
-            class_names = self.metadata.get('class_names', ['Flood Risk', 'Urban Heat Risk', 'Fire Risk', 'Deforestation Risk'])
+            class_names = self.metadata.get('class_names', [])
             label_mapping = self.metadata.get('label_mapping', {})
-            
-            
-            class_to_name = {}
-            if hasattr(self.model, 'classes_'):
-                for idx, label in enumerate(self.model.classes_):
-                    class_to_name[idx] = label_mapping.get(str(label), class_names[label] if label < len(class_names) else f"Class {label}")
-                risk_level = class_to_name.get(np.where(self.model.classes_ == prediction)[0][0], f"Unknown Risk Level {prediction}")
-            else:
-                if str(int(prediction)) in label_mapping:
-                    risk_level = label_mapping[str(int(prediction))]
-                elif int(prediction) < len(class_names):
-                    risk_level = class_names[int(prediction)]
-                else:
-                    risk_level = f"Unknown Risk Level {int(prediction)}"
-            
+            risk_level = label_mapping.get(str(int(prediction)), 
+                                         class_names[int(prediction)] if int(prediction) < len(class_names) else f"Risk Level {int(prediction)}")
             result = {
                 'risk_level': risk_level,
                 'risk_code': int(prediction),
                 'timestamp': datetime.now().isoformat(),
-                'model_version': self.metadata.get('model_type', 'Unknown'),
+                'model_version': self.metadata.get('version', 'Unknown'),
+                'model_training_date': self.metadata.get('training_date', 'Unknown'),
                 'confidence': None,
-                'probabilities': None
+                'probabilities': None,
+                'feature_count': features.shape[1]
             }
-            
             if hasattr(self.model, 'predict_proba'):
                 try:
                     probabilities = self.model.predict_proba(features_scaled)[0]
-                    
-                    prob_sum = np.sum(probabilities)
-                    if prob_sum > 0:
-                        probabilities = probabilities / prob_sum
-                    
                     result['confidence'] = float(np.max(probabilities))
-                    
-                    prob_dict = {}
-                    if hasattr(self.model, 'classes_'):
-                        for idx, prob in enumerate(probabilities):
-                            label = self.model.classes_[idx]
-                            class_name = label_mapping.get(str(label), class_names[int(label)] if int(label) < len(class_names) else f"Class {label}")
-                            prob_dict[class_name] = float(prob)
-                    else:
-                        for i, prob in enumerate(probabilities):
-                            class_name = label_mapping.get(str(i), class_names[i] if i < len(class_names) else f"Unknown Class {i}")
-                            prob_dict[class_name] = float(prob)
-                    
+                    prob_dict = {label_mapping.get(str(i), class_names[i] if i < len(class_names) else f"Class {i}"): float(prob) 
+                                 for i, prob in enumerate(probabilities)}
                     result['probabilities'] = prob_dict
-                    
+                    result['top_risks'] = sorted(prob_dict.items(), key=lambda x: x[1], reverse=True)[:3]
                 except Exception as e:
                     logger.warning(f"Could not compute probabilities: {e}")
-            
             return result
-            
         except Exception as e:
             logger.error(f"Prediction error: {str(e)}")
             return None
 
-
-climate_app = EnhancedClimateDisasterApp()
-
 @app.route('/')
 def index():
-    """Enhanced home page with comprehensive model information"""
-    model_info = {}
-    if climate_app.metadata:
-        model_info = {
-            'model_type': climate_app.metadata.get('model_type', 'Unknown'),
-            'n_features': climate_app.metadata.get('n_features', 0),
-            'n_classes': climate_app.metadata.get('n_classes', 0),
-            'training_date': climate_app.metadata.get('training_date', 'Unknown'),
-            'class_names': climate_app.metadata.get('class_names', []),
-            'feature_names': climate_app.metadata.get('feature_names', [])
-        }
-    
+    """Home page"""
+    model_info = {
+        'model_type': climate_app.metadata.get('model_type', 'Unknown'),
+        'n_features': climate_app.metadata.get('n_features', 15),
+        'n_classes': climate_app.metadata.get('n_classes', 9),  # CHANGED from 8 to 9
+        'training_date': climate_app.metadata.get('training_date', 'Unknown'),
+        'class_names': climate_app.metadata.get('class_names', []),
+        'version': climate_app.metadata.get('version', '3.0-NASA-Space-Apps-2025'),
+        'feature_names': climate_app.feature_names,
+        # CORRECTED: 9 disaster types
+        'disaster_types': ['Flood', 'Urban Heat Risk', 'Forest Fire', 'Deforestation', 
+                          'Drought', 'Tsunami', 'Landslide Monitoring', 'Cyclone/Hurricane', 
+                          'Volcanic Eruption']
+    }
     return render_template("index.html", model_info=model_info)
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    """Enhanced prediction endpoint with comprehensive validation"""
+    """Prediction endpoint"""
     try:
         if climate_app.model is None:
-            return render_template("index.html", 
-                                 message="Error: Model not loaded. Ensure model files exist and are trained.",
-                                 message_type="error",
+            return render_template("index.html",
+                                 message="""Model not loaded.<br>Please train the model first by running:<br><code>python model_trainer.py</code><br><br>Or use the manual feature input below.""",
+                                 message_type="warning",
                                  model_info=climate_app.metadata or {})
-        
         image_file = request.files.get('image')
         features = None
-        data_type = request.form.get('data_type', 'forest')
-        
+        data_type = request.form.get('data_type', 'auto')
         if image_file and image_file.filename:
-            logger.info(f"Processing uploaded image: {image_file.filename} for {data_type} analysis")
-            features = climate_app.process_image(image_file, data_type)
-            
+            logger.info(f"Processing uploaded file: {image_file.filename}")
+            features = climate_app.process_uploaded_file(image_file, data_type)
             if features is None:
-                return render_template("index.html", 
-                                     message="Error: Could not process the uploaded image. Ensure it's a valid SAR image file (.jpg, .png, .tif, .filt).",
+                return render_template("index.html",
+                                     message="Could not process the uploaded file. Please check:<br>- File format (TIFF, HDF5, BSQ, FILT, SHP, NC4, JPG, PNG)<br>- File integrity<br>- File permissions<br>- File size (< 500 MB)",
                                      message_type="error",
                                      model_info=climate_app.metadata or {})
         else:
             input_text = request.form.get('features', '').strip()
-            
             if not input_text:
-                return render_template("index.html", 
-                                     message="Error: Provide SAR feature values or upload an image.",
+                return render_template("index.html",
+                                     message="Please provide either a file upload or manual feature values.",
                                      message_type="error",
                                      model_info=climate_app.metadata or {})
-            
             try:
                 feature_values = [float(x.strip()) for x in input_text.split(',')]
             except ValueError:
-                return render_template("index.html", 
-                                     message="Error: Provide valid numeric values separated by commas.",
+                return render_template("index.html",
+                                     message="Invalid feature format. Please provide 15 comma-separated numbers.",
                                      message_type="error",
                                      model_info=climate_app.metadata or {})
-            
             expected_features = climate_app.metadata.get('n_features', 15)
             if len(feature_values) != expected_features:
-                return render_template("index.html", 
-                                     message=f"Error: Expected {expected_features} features, got {len(feature_values)}. Provide all required SAR features.",
+                return render_template("index.html",
+                                     message=f"Expected {expected_features} features, but received {len(feature_values)}.<br>Please provide exactly {expected_features} comma-separated values.",
                                      message_type="error",
                                      model_info=climate_app.metadata or {})
-            
             features = np.array(feature_values)
-        
         prediction_result = climate_app.predict_risk(features)
-        
         if prediction_result is None:
-            return render_template("index.html", 
-                                 message="Error: Could not generate prediction. Check your input and try again.",
+            return render_template("index.html",
+                                 message="Prediction failed. Please check your input and try again.",
                                  message_type="error",
                                  model_info=climate_app.metadata or {})
-        
         message = generate_enhanced_prediction_message(prediction_result, data_type)
-        
-        logger.info(f"Prediction made: {prediction_result['risk_level']} (confidence: {prediction_result.get('confidence', 'N/A')})")
-        return render_template("index.html", 
-                             message=message, 
+        logger.info(f"Prediction: {prediction_result['risk_level']} (Confidence: {prediction_result.get('confidence', 0):.2f})")
+        return render_template("index.html",
+                             message=message,
                              message_type="success",
                              prediction=prediction_result,
                              model_info=climate_app.metadata or {})
-        
     except Exception as e:
         logger.error(f"Error in prediction endpoint: {str(e)}")
-        return render_template("index.html", 
-                             message="An unexpected error occurred. Check your input and try again.",
+        return render_template("index.html",
+                             message=f"An unexpected error occurred: {str(e)}<br>Please check the server logs for details.",
                              message_type="error",
                              model_info=climate_app.metadata or {})
 
 def generate_enhanced_prediction_message(prediction_result, data_type):
-    """Generate enhanced prediction message with modern styling and comprehensive information"""
+    """Generate comprehensive prediction display - CORRECTED for 9 disasters"""
     risk_level = prediction_result['risk_level']
     confidence = prediction_result.get('confidence', 0)
-    model_version = prediction_result.get('model_version', 'Unknown')
     
     risk_configs = {
-        'Flood Risk': {
+        'Flood': {
             'icon': '🌊',
-            'gradient': 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-            'bg_class': 'bg-blue-500',
-            'border_class': 'border-blue-500',
-            'title': 'Flood Risk Assessment',
-            'description': 'SAR analysis suggests potential flooding vulnerability.',
-            'status_badge': 'CAUTION',
-            'badge_class': 'badge-warning',
+            'color': "#0f6afd",
+            'severity': 'High' if confidence > 0.7 else 'Medium' if confidence > 0.5 else 'Low',
+            'description': 'Potential flooding detected based on water body analysis and soil moisture',
             'recommendations': [
-                'Monitor precipitation forecasts and water levels',
-                'Inspect flood barriers and drainage infrastructure',
-                'Review emergency response and evacuation routes',
-                'Coordinate with water management authorities',
-                'Prepare emergency supplies and resources'
+                'Monitor water levels and precipitation forecasts',
+                'Check drainage systems and flood barriers',
+                'Review evacuation routes and emergency plans',
+                'Coordinate with local flood management authorities'
+            ],
+            'immediate_actions': [
+                'Alert emergency services if confidence > 80%',
+                'Monitor weather updates regularly',
+                'Prepare emergency supplies'
             ]
         },
         'Urban Heat Risk': {
             'icon': '🌡️',
-            'gradient': 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-            'bg_class': 'bg-amber-500',
-            'border_class': 'border-amber-500',
-            'title': 'Urban Heat Island Risk',
-            'description': 'Urban thermal analysis indicates elevated heat risk conditions.',
-            'status_badge': 'ELEVATED',
-            'badge_class': 'badge-warning',
+            'color': '#f59e0b',
+            'severity': 'High' if confidence > 0.7 else 'Medium' if confidence > 0.5 else 'Low',
+            'description': 'Elevated urban temperatures indicating heat island effect',
             'recommendations': [
-                'Monitor temperature forecasts and heat index',
-                'Activate cooling centers and public facilities',
-                'Issue heat warnings to vulnerable populations',
-                'Implement urban heat mitigation measures',
-                'Monitor air quality and heat-related health risks'
+                'Monitor temperature forecasts and heat indices',
+                'Activate cooling centers for vulnerable populations',
+                'Issue public heat warnings and advisories',
+                'Check on elderly and at-risk individuals'
+            ],
+            'immediate_actions': [
+                'Stay hydrated and avoid prolonged sun exposure',
+                'Use air conditioning or fans',
+                'Check on vulnerable community members'
             ]
         },
-        'Fire Risk': {
+        'Forest Fire': {
             'icon': '🔥',
-            'gradient': 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-            'bg_class': 'bg-red-500',
-            'border_class': 'border-red-500',
-            'title': 'Wildfire Risk Detected',
-            'description': 'SAR analysis shows indicators consistent with elevated wildfire conditions.',
-            'status_badge': 'HIGH ALERT',
-            'badge_class': 'badge-danger',
+            'color': '#ef4444',
+            'severity': 'High' if confidence > 0.7 else 'Medium' if confidence > 0.5 else 'Low',
+            'description': 'Elevated fire risk detected based on vegetation analysis and thermal patterns',
             'recommendations': [
-                'Implement immediate fire weather monitoring',
-                'Review and activate evacuation procedures',
-                'Coordinate with local fire management authorities',
-                'Consider temporary access restrictions to high-risk areas',
-                'Monitor wind patterns and humidity levels'
+                'Monitor fire weather conditions and wind patterns',
+                'Review and update evacuation procedures',
+                'Coordinate with fire services and emergency responders',
+                'Restrict access to high-risk forested areas'
+            ],
+            'immediate_actions': [
+                'Report any signs of fire immediately',
+                'Prepare evacuation plan',
+                'Monitor local fire department alerts'
             ]
         },
-        'Deforestation Risk': {
+        'Deforestation': {
             'icon': '🌲',
-            'gradient': 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)',
-            'bg_class': 'bg-green-600',
-            'border_class': 'border-green-600',
-            'title': 'Deforestation Risk Detected',
-            'description': 'Land cover analysis indicates potential deforestation or land change activity.',
-            'status_badge': 'ALERT',
-            'badge_class': 'badge-warning',
+            'color': '#16a34a',
+            'severity': 'High' if confidence > 0.7 else 'Medium' if confidence > 0.5 else 'Low',
+            'description': 'Potential deforestation activity detected through vegetation cover analysis',
             'recommendations': [
                 'Conduct ground verification surveys',
-                'Monitor vegetation index changes over time',
-                'Coordinate with environmental protection authorities',
-                'Implement forest conservation measures',
-                'Review land use policies in the area'
+                'Monitor vegetation changes over time',
+                'Coordinate with environmental protection agencies',
+                'Review and enforce land use policies'
+            ],
+            'immediate_actions': [
+                'Report suspicious land clearing activities',
+                'Document vegetation changes with photos',
+                'Contact local environmental authorities'
+            ]
+        },
+        'Drought': {
+            'icon': '🏜️',
+            'color': '#d97706',
+            'severity': 'High' if confidence > 0.7 else 'Medium' if confidence > 0.5 else 'Low',
+            'description': 'Drought conditions indicated by soil moisture analysis and vegetation stress',
+            'recommendations': [
+                'Monitor soil moisture levels and precipitation deficits',
+                'Implement water conservation measures',
+                'Assess agricultural impact and crop status',
+                'Coordinate regional water resource management'
+            ],
+            'immediate_actions': [
+                'Follow local water restriction guidelines',
+                'Report water supply issues',
+                'Monitor crop and vegetation health'
+            ]
+        },
+        'Tsunami': {
+            'icon': '🌊',
+            'color': "#016bd4",
+            'severity': 'High' if confidence > 0.7 else 'Medium' if confidence > 0.5 else 'Low',
+            'description': 'Tsunami risk detected based on coastal water patterns and seismic activity indicators',
+            'recommendations': [
+                'Monitor tsunami warning systems and seismic activity',
+                'Review coastal evacuation routes and plans',
+                'Coordinate with national tsunami warning centers',
+                'Conduct public awareness campaigns'
+            ],
+            'immediate_actions': [
+                'Follow tsunami warning alerts',
+                'Move to higher ground if advised',
+                'Stay informed via official channels'
+            ]
+        },
+        'Landslide Monitoring': {
+            'icon': '🏔️',
+            'color': '#8b4513',
+            'severity': 'High' if confidence > 0.7 else 'Medium' if confidence > 0.5 else 'Low',
+            'description': 'Landslide risk detected based on terrain instability and precipitation patterns',
+            'recommendations': [
+                'Monitor rainfall and soil stability data',
+                'Inspect slopes and retaining structures',
+                'Update landslide evacuation plans',
+                'Coordinate with geological survey teams'
+            ],
+            'immediate_actions': [
+                'Avoid unstable slopes during heavy rain',
+                'Report unusual ground movement',
+                'Follow local authority guidance'
+            ]
+        },
+        'Cyclone/Hurricane': {
+            'icon': '🌪️',
+            'color': '#8b5cf6',
+            'severity': 'High' if confidence > 0.7 else 'Medium' if confidence > 0.5 else 'Low',
+            'description': 'Cyclone or hurricane risk detected based on atmospheric and oceanic patterns',
+            'recommendations': [
+                'Monitor storm tracks and weather forecasts',
+                'Reinforce infrastructure against high winds',
+                'Prepare emergency shelters and supplies',
+                'Coordinate with meteorological agencies'
+            ],
+            'immediate_actions': [
+                'Follow storm warnings and advisories',
+                'Secure property and evacuate if ordered',
+                'Stay updated via weather services'
+            ]
+        },
+        # ADDED: Volcanic Eruption configuration
+        'Volcanic Eruption': {
+            'icon': '🌋',
+            'color': '#dc2626',
+            'severity': 'High' if confidence > 0.7 else 'Medium' if confidence > 0.5 else 'Low',
+            'description': 'Volcanic activity detected through thermal anomalies and surface deformation',
+            'recommendations': [
+                'Monitor volcanic activity and seismic data',
+                'Establish exclusion zones around active vents',
+                'Prepare for ashfall and lava flow scenarios',
+                'Coordinate with volcanological observatories'
+            ],
+            'immediate_actions': [
+                'Follow evacuation orders immediately',
+                'Prepare emergency go-bags and supplies',
+                'Monitor volcanic alert levels'
             ]
         }
     }
-    
-    risk_info = risk_configs.get(risk_level, risk_configs['Flood Risk'])  # Default to Flood if unknown
-    
+    config = risk_configs.get(risk_level, risk_configs['Flood'])
     message = f"""
-    <div class="prediction-result-container" style="font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;">
-        <!-- Main Risk Assessment Card -->
-        <div class="card shadow-2xl border-0 mb-6 overflow-hidden" style="border-radius: 16px; backdrop-filter: blur(10px);">
-            <div class="card-header text-white position-relative" style="background: {risk_info['gradient']}; padding: 2.5rem 2rem;">
+    <div class="prediction-container" style="font-family: system-ui, -apple-system, sans-serif;">
+        <div class="card border-0 shadow-lg mb-4" style="border-radius: 12px; overflow: hidden;">
+            <div class="card-header text-white" style="background: linear-gradient(135deg, {config['color']} 0%, {config['color']}dd 100%); padding: 2rem;">
                 <div class="d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center">
-                        <span class="display-3 me-4" style="filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">{risk_info['icon']}</span>
-                        <div>
-                            <h2 class="mb-2 fw-bold" style="font-size: 2rem; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">{risk_info['title']}</h2>
-                            <span class="badge {risk_info['badge_class']} px-4 py-2" style="font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">{risk_info['status_badge']}</span>
+                    <div>
+                        <h2 class="mb-2 fw-bold">{config['icon']} {risk_level}</h2>
+                        <p class="mb-1 opacity-90">{config['description']}</p>
+                        <div class="d-flex gap-3 mt-2">
+                            <div class="badge bg-light text-dark px-3 py-2">
+                                <i class="fas fa-shield-alt me-1"></i>Severity: {config['severity']}
+                            </div>
+                            <div class="badge bg-light text-dark px-3 py-2">
+                                <i class="fas fa-chart-line me-1"></i>Confidence: {confidence:.0%}
+                            </div>
                         </div>
-                    </div>
-                    <div class="text-end">
-                        <div class="fs-6 opacity-75 mb-1">Model Confidence</div>
-                        <div class="display-5 fw-bold" style="text-shadow: 0 2px 4px rgba(0,0,0,0.3);">{confidence:.0%}</div>
-                        <div class="small opacity-75 mt-1">{model_version}</div>
                     </div>
                 </div>
             </div>
-            
-            <div class="card-body p-0">
-                <!-- Analysis Summary -->
-                <div class="p-4 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-700">
-                    <p class="lead mb-0 text-gray-700 dark:text-gray-200" style="font-size: 1.1rem; line-height: 1.6;">{risk_info['description']}</p>
-                </div>
-                
-                <!-- Enhanced Confidence Meter -->
-                <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="fw-semibold text-dark dark:text-white" style="font-size: 1rem;">Assessment Reliability</span>
-                        <div class="d-flex align-items-center">
-                            <span class="badge bg-primary px-3 py-2 me-2" style="font-size: 0.9rem;">{confidence:.1%}</span>
-                            <small class="text-muted">Confidence Score</small>
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="fw-bold mb-3">Risk Assessment</h5>
+                        <div class="progress mb-2" style="height: 20px;">
+                            <div class="progress-bar" style="width: {confidence*100}%; background-color: {config['color']};">
+                                {confidence:.1%}
+                            </div>
                         </div>
+                        <small class="text-muted">Model Confidence Score</small>
                     </div>
-                    <div class="progress mb-2" style="height: 12px; border-radius: 10px; background: #e5e7eb;">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                             style="width: {confidence*100:.0f}%; background: {risk_info['gradient']}; border-radius: 10px; transition: width 1.2s ease-out;"></div>
-                    </div>
-                    <div class="d-flex justify-content-between text-xs text-muted">
-                        <span>Low</span>
-                        <span>Moderate</span>
-                        <span>High</span>
-                        <span>Very High</span>
+                    <div class="col-md-6">
+                        <h5 class="fw-bold mb-3">Immediate Actions</h5>
+                        <ul class="list-unstyled">
+    """
+    for action in config['immediate_actions']:
+        message += f'<li class="mb-1">✅ {action}</li>'
+    message += """
+                        </ul>
                     </div>
                 </div>
-                
-                <!-- Action Items Section -->
-                <div class="p-4">
-                    <h5 class="fw-bold mb-4 d-flex align-items-center text-dark dark:text-white">
-                        <i class="bi bi-list-check me-3 text-2xl" style="color: {risk_info['gradient'].split()[2]};"></i>
-                        <span>📋 Recommended Actions</span>
-                    </h5>
+                <div class="mt-4">
+                    <h5 class="fw-bold mb-3">Recommended Response Plan</h5>
                     <div class="row g-3">
     """
-    
-    for i, rec in enumerate(risk_info['recommendations']):
+    for i, rec in enumerate(config['recommendations'], 1):
         message += f"""
-                        <div class="col-md-6 col-lg-4">
-                            <div class="d-flex align-items-start p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-4 hover:shadow-lg transition-all duration-300" 
-                                 style="border-left-color: {risk_info['gradient'].split()[2]}; min-height: 80px;">
-                                <span class="badge bg-secondary rounded-circle me-3 d-flex align-items-center justify-content-center flex-shrink-0" 
-                                      style="width: 28px; height: 28px; font-size: 0.8rem; font-weight: 600;">{i+1}</span>
-                                <span class="text-dark dark:text-white fw-medium" style="font-size: 0.95rem; line-height: 1.4;">{rec}</span>
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded h-100">
+                                <div class="d-flex align-items-start">
+                                    <span class="badge bg-primary me-2">{i}</span>
+                                    <span>{rec}</span>
+                                </div>
                             </div>
                         </div>
         """
-    
     message += """
                     </div>
                 </div>
-            </div>
-        </div>
     """
-    
     if prediction_result.get('probabilities'):
         message += """
-        <div class="card shadow-lg border-0 mb-4" style="border-radius: 16px;">
-            <div class="card-header text-white" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); border-radius: 16px 16px 0 0; padding: 1.5rem;">
-                <h5 class="mb-0 fw-bold d-flex align-items-center">
-                    <span class="me-3">📊</span> Detailed Risk Assessment Breakdown
-                </h5>
-            </div>
-            <div class="card-body p-4" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);">
-                <div class="row g-4">
+                <div class="mt-4">
+                    <h5 class="fw-bold mb-3">Detailed Risk Analysis</h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Risk Type</th>
+                                    <th>Probability</th>
+                                    <th>Confidence</th>
+                                </tr>
+                            </thead>
+                            <tbody>
         """
-        
-        sorted_probs = sorted(prediction_result['probabilities'].items(), key=lambda x: x[1], reverse=True)
-        
-        for risk_type, probability in sorted_probs:
-            percentage = probability * 100
-            if percentage >= 70:
-                bar_color = '#dc2626'
-                intensity = 'Very High'
-                bg_color = '#fef2f2'
-            elif percentage >= 50:
-                bar_color = '#ea580c'
-                intensity = 'High'
-                bg_color = '#fff7ed'
-            elif percentage >= 30:
-                bar_color = '#d97706'
-                intensity = 'Moderate'
-                bg_color = '#fffbeb'
-            elif percentage >= 15:
-                bar_color = '#059669'
-                intensity = 'Low'
-                bg_color = '#f0fdf4'
-            else:
-                bar_color = '#10b981'
-                intensity = 'Very Low'
-                bg_color = '#f0fdf4'
-            
+        for risk_type, prob in sorted(prediction_result['probabilities'].items(), 
+                                     key=lambda x: x[1], reverse=True):
+            percentage = prob * 100
+            bar_color = config['color'] if risk_type == risk_level else '#6c757d'
             message += f"""
-                    <div class="col-md-6 col-lg-3 mb-3">
-                        <div class="p-4 rounded-xl shadow-sm border hover:shadow-md transition-all duration-300" 
-                             style="background: {bg_color}; border-color: {bar_color}20;">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="fw-bold text-gray-800" style="font-size: 0.9rem;">{risk_type}</span>
-                                <span class="badge text-white fw-semibold" 
-                                      style="background-color: {bar_color}; padding: 0.8rem 0.8rem; font-size: 0.8rem;">{percentage:.1f}%</span>
-                            </div>
-                            <div class="progress mb-2" style="height: 8px; border-radius: 10px; background-color: #e5e7eb;">
-                                <div class="progress-bar" 
-                                     style="width: {percentage}%; background-color: {bar_color}; border-radius: 10px; 
-                                            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);"></div>
-                            </div>
-                            <div class="text-center">
-                                <small class="text-gray-600 fw-medium">{intensity} Probability</small>
-                            </div>
-                        </div>
-                    </div>
+                                <tr>
+                                    <td>{risk_type}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                                <div class="progress-bar" style="width: {percentage}%; background-color: {bar_color};"></div>
+                                            </div>
+                                            <span>{percentage:.1f}%</span>
+                                        </div>
+                                    </td>
+                                    <td>{'Primary' if risk_type == risk_level else 'Secondary'}</td>
+                                </tr>
             """
-        
         message += """
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
-        </div>
         """
-    
     message += f"""
-        <div class="card border-0 shadow-lg mb-4" style="border-radius: 16px; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);">
-            <div class="card-body p-4">
-                <div class="d-flex align-items-start">
-                    <div class="me-4">
-                        <span style="font-size: 2.5rem;">⚠️</span>
-                    </div>
-                    <div class="flex-grow-1">
-                        <h5 class="fw-bold text-gray-800 mb-3">Important Usage Guidelines</h5>
-                        <div class="alert alert-warning bg-gradient-to-r border-l-4 border-yellow-500 rounded-lg mb-0" 
-                             style="background: linear-gradient(90deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid #f59e0b;">
-                            <p class="mb-2 fw-semibold text-gray-800">This system provides research-grade risk assessment for early warning purposes.</p>
-                            <p class="mb-2 text-gray-700">Predictions are based on SAR satellite data analysis using {model_version} model and should supplement, not replace, official weather services and emergency management guidance.</p>
-                            <p class="mb-0 fw-bold text-gray-800">Always prioritize official evacuation orders, weather warnings, and emergency management directives.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Enhanced Analysis Metadata -->
-        <div class="text-center mt-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border">
-            <div class="row align-items-center text-sm text-gray-600 dark:text-gray-400">
-                <div class="col-md-4">
-                    <i class="bi bi-clock me-2"></i>
-                    <span>Analysis: {datetime.now().strftime('%Y-%m-%d %H:%M UTC')}</span>
-                </div>
-                <div class="col-md-4">
-                    <i class="bi bi-satellite me-2"></i>
-                    <span>SAR Data Processing System v3.0</span>
-                </div>
-                <div class="col-md-4">
-                    <i class="bi bi-cpu me-2"></i>
-                    <span>Model: {model_version}</span>
+                <div class="alert alert-warning mt-4">
+                    <strong>⚠️ NASA Research Disclaimer:</strong> This assessment uses machine learning on multi-format SAR data 
+                    (TIFF, HDF5, BSQ, FILT, SHP, NC4, JPG, PNG). Always follow official emergency management guidance and 
+                    verify with ground truth data. Model version: {prediction_result.get('model_version', 'Unknown')}
                 </div>
             </div>
         </div>
     </div>
-    
-    <style>
-        .prediction-result-container {{
-            animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }}
-        
-        @keyframes fadeInUp {{
-            from {{
-                opacity: 0;
-                transform: translateY(40px);
-            }}
-            to {{
-                opacity: 1;
-                transform: translateY(0);
-            }}
-        }}
-        
-        .card {{
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }}
-        
-        .card:hover {{
-            transform: translateY(-4px);
-        }}
-        
-        .progress-bar {{
-            transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }}
-        
-        .badge {{
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }}
-        
-        .lead {{
-            line-height: 1.7;
-        }}
-        
-        @media (max-width: 768px) {{
-            .prediction-result-container {{
-                padding: 0.5rem;
-            }}
-            .card-header {{
-                padding: 1.5rem 1rem !important;
-            }}
-            .display-3 {{
-                font-size: 2.5rem !important;
-            }}
-        }}
-    </style>
     """
-    
     return message
 
-if __name__ == "__main__":
-    if climate_app.model is not None:
-        print("✅ Enhanced Climate Disaster Prediction System Ready")
-        print("🛰️ SAR-based risk assessment model loaded")
-        print("🌍 Multi-format SAR data support enabled")
-        print("🔬 Starting enhanced server at http://127.0.0.1:5000")
-    else:
-        print("⚠️ Model not loaded. Please run the updated model_trainer.py first.")
-    
-    app.run(debug=True, host='0.0.0.0', port=5000)
+climate_app = AdvancedClimateDisasterApp()
+
+if __name__ == '__main__':
+    app.run(debug=True)
