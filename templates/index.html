@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Echo Explorer</title>
+    <title>Climate Disaster Risk Prediction</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -148,7 +148,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap');
         
         /* ================================
-   Global Styles 
+   Global Styles - Professional Enhancement
 ================================ */
 * {
     scroll-behavior: smooth;
@@ -180,7 +180,7 @@ body {
     line-height: 1.6;
 }
 
-/*  Dark Theme */
+/* Enhanced Professional Dark Theme */
 .dark body {
     background: 
         
@@ -195,7 +195,7 @@ body {
     z-index: -5;
 }
 
-/*  Star Field */
+/* Professional Star Field */
 .star-field {
     position: fixed;
     top: 0;
@@ -235,7 +235,7 @@ body {
 }
 
 /* ================================
-    Glass Effect
+   Enhanced Glass Effect - Professional
 ================================ */
 .glass-effect {
     backdrop-filter: blur(24px) saturate(180%);
@@ -263,7 +263,7 @@ body {
 }
 
 /* ================================
-    Typography
+   Professional Typography
 ================================ */
 .gradient-text {
     background: linear-gradient(135deg, #0f766e, #14b8a6, #22c55e);
@@ -305,7 +305,7 @@ body {
 }
 
 /* ================================
-    Buttons
+   Enhanced Professional Buttons
 ================================ */
 button, a {
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -344,7 +344,7 @@ button, a {
 }
 
 /* ================================
-    Theme Toggle
+   Professional Theme Toggle
 ================================ */
 .theme-toggle {
     position: fixed;
@@ -392,7 +392,7 @@ button, a {
 }
 
 /* ================================
-    Hover Effects
+   Enhanced Professional Hover Effects
 ================================ */
 .hover-lift {
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -415,7 +415,7 @@ button, a {
 }
 
 /* ================================
-   Section Spacing &  Animation
+   Section Spacing & Professional Animation
 ================================ */
 .section-spacing {
     padding: 5rem 0;
@@ -433,7 +433,7 @@ button, a {
 }
 
 /* ================================
-    Celestial Effects
+   Professional Celestial Effects
 ================================ */
 .celestial-premium {
     animation: float 12s ease-in-out infinite;
@@ -454,7 +454,7 @@ button, a {
 }
 
 /* ================================
-    Dark Mode Enhancements
+   Professional Dark Mode Enhancements
 ================================ */
 .dark .text-gray-900 { color: #f8fafc !important; }
 .dark .text-gray-800 { color: #e2e8f0 !important; }
@@ -469,7 +469,7 @@ button, a {
 .dark .border-green-100 { border-color: rgba(71, 85, 105, 0.4) !important; }
 .dark .border-green-200 { border-color: rgba(71, 85, 105, 0.5) !important; }
 
-/*  pulse animation for dark mode */
+/* Professional pulse animation for dark mode */
 .dark .animate-pulse {
     animation: dark-pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
@@ -486,7 +486,7 @@ button, a {
 }
 
 /* ================================
-    Card Enhancements
+   Professional Card Enhancements
 ================================ */
 .professional-card {
     background: rgba(255, 255, 255, 0.9);
@@ -515,7 +515,7 @@ button, a {
 }
 
 /* ================================
-    Animations
+   Professional Animations
 ================================ */
 @keyframes float {
     0%, 100% { transform: translateY(0); }
@@ -538,7 +538,7 @@ button, a {
 }
 
 /* ================================
-    Responsive Design
+   Professional Responsive Design
 ================================ */
 @media (max-width: 768px) {
     .hover-lift:hover {
@@ -567,7 +567,7 @@ button, a {
 }
 
 /* ================================
-    Dark Mode Cards
+   Enhanced Dark Mode Cards
 ================================ */
 .dark .group:hover .bg-gradient-to-br {
     background: linear-gradient(to bottom right, 
@@ -578,7 +578,7 @@ button, a {
 }
 
 /* ================================
-    Scrollbar
+   Professional Scrollbar
 ================================ */
 ::-webkit-scrollbar {
     width: 8px;
@@ -787,6 +787,13 @@ button, a {
               <span class="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-teal-600 to-emerald-600 group-hover:w-full transition-all duration-300 rounded-full"></span>
             </a>
           </li>
+        <li>
+            <a href="#Preparedness" 
+               class="text-base hover:text-teal-700 dark:hover:text-emerald-400 transition-all duration-300 relative group font-medium">
+              Disaster Preparedness
+              <span class="absolute -bottom-2 left-0 w-0 h-0.5 bg-gradient-to-r from-teal-600 to-emerald-600 group-hover:w-full transition-all duration-300 rounded-full"></span>
+            </a>
+          </li>
         </ul>
       </nav>
 
@@ -802,13 +809,15 @@ button, a {
         <div id="mobile-menu" class="hidden absolute right-0 mt-3 w-64 glass-effect rounded-xl professional-shadow border border-gray-200 dark:border-gray-600 z-50">
           <ul class="flex flex-col p-6 space-y-3 text-gray-700 dark:text-gray-300 font-medium text-sm">
             <li><a href="#" class="block hover:text-teal-600 dark:hover:text-emerald-400 py-2 px-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">Home</a></li>
-            <li><a href="{{ url_for('static', filename='main.html') }}" class="block hover:text-teal-600 dark:hover:text-emerald-400 py-2 px-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">CosmoRadar</a></li>
+            <li><a href="main.html" class="block hover:text-teal-600 dark:hover:text-emerald-400 py-2 px-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">CosmoRadar</a></li>
             <li><a href="#sar" class="block hover:text-teal-600 dark:hover:text-emerald-400 py-2 px-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">SAR Risk Analyzer</a></li>
-            <li><a href="{{ url_for('static', filename='GSI.html') }}" class="block hover:text-teal-600 dark:hover:text-emerald-400 py-2 px-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">GSIP</a></li>
-            <li><a href="{{ url_for('static', filename='CDRP.html') }}" class="block hover:text-teal-600 dark:hover:text-emerald-400 py-2 px-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">CDRP</a></li>
+            <li><a href="GSI.html" class="block hover:text-teal-600 dark:hover:text-emerald-400 py-2 px-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">GSIP</a></li>
+            <li><a href="CDRP.html" class="block hover:text-teal-600 dark:hover:text-emerald-400 py-2 px-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">CDRP</a></li>
             <li><a href="#news" class="block hover:text-teal-600 dark:hover:text-emerald-400 py-2 px-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">News</a></li>
             <li><a href="#mission" class="block hover:text-teal-600 dark:hover:text-emerald-400 py-2 px-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">Missions</a></li>
-          </ul>
+            <li><a href="#Preparedness" class="block hover:text-teal-600 dark:hover:text-emerald-400 py-2 px-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">Disaster Preparedness</a></li>
+
+        </ul>
         </div>
       </div>
 
@@ -828,9 +837,9 @@ button, a {
   });
 </script>
 
-<!--  Hero Section -->
+<!-- Professional Hero Section -->
 <section class="relative section-spacing pt-20 pb-16 lg:pt-24 lg:pb-20 overflow-hidden">
-    <!--  Background Elements -->
+    <!-- Enhanced Background Elements -->
     <div class="absolute inset-0 -z-10">
         <!-- Dynamic Gradient Orbs -->
         <div class="absolute top-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-teal-400/10 to-emerald-400/10 rounded-full blur-3xl animate-pulse"></div>
@@ -841,7 +850,7 @@ button, a {
     </div>
 
     <div class="text-center max-w-6xl mx-auto relative">
-        <!--  Interactive Title -->
+        <!-- Enhanced Interactive Title -->
         <div class="relative inline-block mb-8 group perspective">
             <h1 class="text-4xl md:text-5xl lg:text-7xl font-space font-black leading-tight transform transition-transform duration-500 group-hover:scale-[1.02]">
                 <span class="block text-transparent bg-clip-text bg-gradient-to-r from-teal-500 via-emerald-500 to-cyan-600 animate-gradient-x relative z-10 cursor-default
@@ -855,12 +864,12 @@ button, a {
                 </span>
             </h1>
             
-            <!--  Decorative Elements -->
+            <!-- Interactive Decorative Elements -->
             <div class="absolute -top-8 -left-8 w-24 h-24 bg-teal-400/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
             <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-emerald-400/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
         </div>
 
-        <!--   Description -->
+        <!-- Enhanced Interactive Description -->
         <p class="text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-12 leading-relaxed max-w-3xl mx-auto text-center animate-fade-in relative
                   hover:scale-105 transition-transform duration-300 cursor-default">
             Journey through the cosmos with our interactive platform. 
@@ -875,7 +884,8 @@ button, a {
             and real-time data.
         </p>
 
-
+        <!-- Enhanced Interactive Button Group -->
+        <!-- Interactive Flow Steps -->
         <div class="flex flex-col md:flex-row justify-between items-center gap-3 relative">
             
             <!-- Step 1: CosmoRadar -->
@@ -1014,7 +1024,7 @@ button, a {
     </div>
 </section>
 
-<!--  Dashboard Grid -->
+<!-- Professional Dashboard Grid -->
 <section class="section-spacing">
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-14 mb-16">
 
@@ -1149,7 +1159,7 @@ button, a {
   </div>
 </section>
 
-<!--  SAR Section Header -->
+<!-- Professional SAR Section Header -->
 <div id="sar" class="relative professional-card p-8 mb-8 text-center hover-lift overflow-hidden">
     <!-- Background image -->
     <div class="absolute inset-0">
@@ -1175,7 +1185,7 @@ button, a {
     </div>
 </div>
 
-<!--  System Status Dashboard -->
+<!-- Advanced System Status Dashboard -->
 <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 mb-8 overflow-hidden">
     <div class="bg-gradient-to-r from-teal-600 to-emerald-600 dark:from-teal-700 dark:to-emerald-700 p-6">
         <div class="flex items-center justify-between">
@@ -1635,7 +1645,7 @@ document.getElementById('analysisForm').addEventListener('submit', function(e) {
 
 
 
-<!--  Disclaimer -->
+<!-- Professional Disclaimer -->
 <div class="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-2 border-yellow-200 dark:border-yellow-600/30 rounded-xl p-6 border-t-4 border-t-yellow-400 dark:border-t-yellow-500 professional-shadow mb-8">
     <h6 class="text-lg font-bold text-yellow-800 dark:text-yellow-300 mb-4 flex items-center">
         <i class="bi bi-shield-exclamation mr-2"></i>Important Disclaimer
@@ -1643,7 +1653,7 @@ document.getElementById('analysisForm').addEventListener('submit', function(e) {
     <p class="text-yellow-800 dark:text-yellow-200 text-sm leading-relaxed font-medium">This system provides research-grade climate disaster risk predictions using advanced SAR data analysis and machine learning techniques. Results should complement, not replace, official meteorological and emergency management guidance. Always follow directives from local authorities during disaster events and emergency situations.</p>
 </div>
 
-<!--  News Ticker -->
+<!-- Professional News Ticker -->
 <div id="news" class="professional-card bg-teal-50 dark:bg-slate-800 rounded-xl p-6 my-12 overflow-hidden relative professional-shadow">
     <!-- Header -->
     <div class="flex items-center gap-3 mb-4">
@@ -1655,7 +1665,7 @@ document.getElementById('analysisForm').addEventListener('submit', function(e) {
         </div>
     </div>
 
-    <!--  Ticker -->
+    <!-- Professional Ticker -->
     <div class="overflow-hidden">
         <div class="flex whitespace-nowrap animate-ticker-scroll text-sm sm:text-base">
             <!-- Item 1 -->
@@ -1682,7 +1692,7 @@ document.getElementById('analysisForm').addEventListener('submit', function(e) {
     </div>
 </div>
 
-<!-- Cards Carousel Section -->
+<!-- Professional Enhanced Cards Carousel Section -->
 <section id="mission" class="section-spacing">
     <!-- Section Header -->
     <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-16">
@@ -1696,7 +1706,7 @@ document.getElementById('analysisForm').addEventListener('submit', function(e) {
         </a>
     </div>
 
-    <!-- Carousel -->
+    <!-- Professional Carousel -->
     <div class="relative">
         <!-- Carousel Navigation -->
         <div class="absolute -left-6 top-1/2 -translate-y-1/2 z-10">
@@ -2027,6 +2037,353 @@ document.getElementById('analysisForm').addEventListener('submit', function(e) {
         </div>
     </div>
 </section>
+
+
+
+
+
+
+
+<!-- Disaster Preparedness & Action Hub - NEW FEATURE -->
+<section class="section-spacing mt-16" id="action-hub">
+    <div class="professional-card p-12 hover-lift border-2 border-emerald-200/50 dark:border-emerald-600/50">
+        
+        <div id="sar" class="relative professional-card p-8 mb-8 text-center hover-lift overflow-hidden">
+    <!-- Background image -->
+    <div class="absolute inset-0">
+        <img src="{{ url_for('static', filename='assets/57.png') }}" 
+             alt="Climate background" 
+             class="w-full h-full object-cover opacity-30 dark:opacity-20">
+    </div>
+
+    <!-- Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-b from-teal-50/80 via-transparent to-emerald-50/80 dark:from-slate-900/80 dark:to-slate-800/80"></div>
+
+    <!-- Content -->
+    <div class="relative z-10">
+        <h1 class="text-4xl md:text-5xl font-black mb-4 gradient-text flex items-center justify-center gap-3">
+            <img src="{{ url_for('static', filename='assets/earth.gif') }}" 
+                 alt="Animated Earth globe icon" 
+                 class="w-12 h-12 rounded-full professional-shadow">
+            Community Disaster Preparedness Hub
+        </h1>
+        <p class="text-green-800 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
+            Powered by <span class="font-semibold text-emerald-600">NASA SAR Data</span>  delivering actionable insights 
+            to protect communities, save lives, and build sustainable climate resilience.
+        </p>
+    </div>
+</div>
+
+        <!-- Three Zero Formula Integration -->
+        <div class="bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 
+                    rounded-2xl p-8 mb-12 border-2 border-emerald-300 dark:border-emerald-600">
+            <h3 class="text-2xl font-bold text-center mb-8 text-emerald-800 dark:text-emerald-300">
+                <i class="bi bi-bullseye mr-3"></i>Three Zero Formula for Disaster Resilience
+            </h3>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-white dark:bg-slate-800 rounded-xl p-6 text-center hover:scale-105 transition-all">
+                    <div class="text-5xl font-bold text-red-500 mb-3">0</div>
+                    <h4 class="font-bold text-lg mb-2 text-gray-800 dark:text-gray-200">Zero Casualties</h4>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Early warning systems + evacuation planning</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 rounded-xl p-6 text-center hover:scale-105 transition-all">
+                    <div class="text-5xl font-bold text-orange-500 mb-3">0</div>
+                    <h4 class="font-bold text-lg mb-2 text-gray-800 dark:text-gray-200">Zero Asset Loss</h4>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Infrastructure protection + risk mapping</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 rounded-xl p-6 text-center hover:scale-105 transition-all">
+                    <div class="text-5xl font-bold text-emerald-500 mb-3">0</div>
+                    <h4 class="font-bold text-lg mb-2 text-gray-800 dark:text-gray-200">Zero Carbon Impact</h4>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Sustainable recovery + green rebuilding</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Location-Based Action Plan Generator -->
+        <div class="mb-12">
+            <h3 class="text-2xl font-bold mb-6 flex items-center">
+                <i class="bi bi-geo-alt-fill text-emerald-400 mr-3"></i>
+                Get Your Location-Specific Action Plan
+            </h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-semibold mb-3 text-gray-700 dark:text-gray-300">
+                        Select Your Region
+                    </label>
+                    <select id="regionSelect" class="w-full p-4 rounded-xl border-2 border-emerald-200 dark:border-emerald-600 
+                                   bg-white dark:bg-slate-800 focus:border-emerald-400 transition-all">
+                        <option value="">Choose your location...</option>
+                        <option value="coastal">Coastal Areas (Flood/Tsunami Risk)</option>
+                        <option value="forest">Forest Regions (Wildfire Risk)</option>
+                        <option value="urban">Urban Centers (Heat Island/Flooding)</option>
+                        <option value="agricultural">Agricultural Land (Drought/Flood)</option>
+                        <option value="mountain">Mountain/Hilly (Landslide Risk)</option>
+                        <option value="delta">River Delta (Cyclone/Flood)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-3 text-gray-700 dark:text-gray-300">
+                        Primary Concern
+                    </label>
+                    <select id="concernSelect" class="w-full p-4 rounded-xl border-2 border-emerald-200 dark:border-emerald-600 
+                                   bg-white dark:bg-slate-800 focus:border-emerald-400 transition-all">
+                        <option value="">Select disaster type...</option>
+                        <option value="flood">Flooding</option>
+                        <option value="fire">Wildfire</option>
+                        <option value="cyclone">Cyclone/Hurricane</option>
+                        <option value="drought">Drought</option>
+                        <option value="landslide">Landslide</option>
+                        <option value="heat">Extreme Heat</option>
+                    </select>
+                </div>
+            </div>
+            <button id="generatePlanBtn" 
+                    class="w-full mt-6 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 
+                           text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 hover:scale-[1.02]">
+                <i class="bi bi-clipboard-check mr-3"></i>
+                Generate My Action Plan
+            </button>
+        </div>
+
+        <!-- Action Plan Results -->
+        <div id="actionPlanResults" class="hidden space-y-8">
+            
+            <!-- Before Disaster: Preparation -->
+            <div class="professional-card p-8 border-l-4 border-blue-500">
+                <h3 class="text-2xl font-bold mb-6 flex items-center text-blue-400">
+                    <i class="bi bi-calendar-check mr-3"></i>
+                    BEFORE Disaster: Preparation Phase
+                </h3>
+                <div class="grid md:grid-cols-2 gap-6" id="beforeActions">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- During Disaster: Response -->
+            <div class="professional-card p-8 border-l-4 border-orange-500">
+                <h3 class="text-2xl font-bold mb-6 flex items-center text-orange-400">
+                    <i class="bi bi-exclamation-triangle mr-3"></i>
+                    DURING Disaster: Emergency Response
+                </h3>
+                <div class="grid md:grid-cols-2 gap-6" id="duringActions">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- After Disaster: Recovery -->
+            <div class="professional-card p-8 border-l-4 border-emerald-500">
+                <h3 class="text-2xl font-bold mb-6 flex items-center text-emerald-400">
+                    <i class="bi bi-arrow-clockwise mr-3"></i>
+                    AFTER Disaster: Recovery & Resilience
+                </h3>
+                <div class="grid md:grid-cols-2 gap-6" id="afterActions">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- NASA Mission Integration -->
+            <div class="professional-card p-8 bg-gradient-to-r from-indigo-900/30 to-purple-900/30 border-2 border-indigo-500">
+                <h3 class="text-2xl font-bold mb-6 flex items-center text-indigo-300">
+                    <i class="bi bi-rocket-takeoff mr-3"></i>
+                    How NASA Missions Support This Plan
+                </h3>
+                <div id="nasaSupport" class="space-y-4">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Community Resources -->
+        <div class="mt-12 grid md:grid-cols-3 gap-6">
+            <div class="professional-card p-6 text-center hover:scale-105 transition-all">
+                <i class="bi bi-download text-4xl text-emerald-400 mb-4"></i>
+                <h4 class="font-bold mb-2">Download Emergency Kit Checklist</h4>
+                <button class="mt-4 text-emerald-400 hover:text-emerald-300 font-semibold">
+                    Download PDF <i class="bi bi-arrow-right ml-2"></i>
+                </button>
+            </div>
+            <div class="professional-card p-6 text-center hover:scale-105 transition-all">
+                <i class="bi bi-phone text-4xl text-emerald-400 mb-4"></i>
+                <h4 class="font-bold mb-2">Emergency Contact Numbers</h4>
+                <button class="mt-4 text-emerald-400 hover:text-emerald-300 font-semibold">
+                    View Contacts <i class="bi bi-arrow-right ml-2"></i>
+                </button>
+            </div>
+            <div class="professional-card p-6 text-center hover:scale-105 transition-all">
+                <i class="bi bi-people text-4xl text-emerald-400 mb-4"></i>
+                <h4 class="font-bold mb-2">Join Community Network</h4>
+                <button class="mt-4 text-emerald-400 hover:text-emerald-300 font-semibold">
+                    Connect Now <i class="bi bi-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<script>
+// Action Plan Generator
+const actionPlans = {
+    flood: {
+        before: [
+            {icon: "house-check", title: "Elevate Utilities", desc: "Raise electrical panels, furnaces above flood level"},
+            {icon: "bag-check", title: "Emergency Kit", desc: "Water, food, first aid, flashlight, battery radio"},
+            {icon: "map", title: "Evacuation Route", desc: "Know 2+ routes, practice with family"},
+            {icon: "cloud-upload", title: "Document Property", desc: "Photos/videos of belongings for insurance"},
+            {icon: "people", title: "Community Alert System", desc: "Join local flood warning network"},
+            {icon: "water", title: "Install Flood Barriers", desc: "Sandbags, flood gates for doors/windows"}
+        ],
+        during: [
+            {icon: "exclamation-triangle", title: "Move to Higher Ground", desc: "Go upstairs or evacuate immediately"},
+            {icon: "phone-slash", title: "Avoid Electrocution", desc: "Stay away from downed power lines"},
+            {icon: "car-front", title: "Never Drive Through Water", desc: "6 inches can sweep a car away"},
+            {icon: "broadcast", title: "Stay Informed", desc: "Monitor weather radio/alerts continuously"}
+        ],
+        after: [
+            {icon: "shield-check", title: "Safety First", desc: "Check for structural damage before entering"},
+            {icon: "droplet-half", title: "Avoid Floodwater", desc: "Contaminated water causes disease"},
+            {icon: "camera", title: "Document Damage", desc: "Photos for insurance claims"},
+            {icon: "recycle", title: "Green Recovery", desc: "Use sustainable materials for rebuilding"}
+        ],
+        nasa: [
+            {mission: "SMAP (Soil Moisture)", desc: "Tracks soil saturation to predict flood risk 5-7 days ahead"},
+            {mission: "GPM (Precipitation)", desc: "Real-time global rainfall monitoring for flood forecasting"},
+            {mission: "Sentinel-1 SAR", desc: "Detects flooded areas even through clouds for emergency response"},
+            {mission: "GRACE-FO", desc: "Monitors groundwater changes to assess flood/drought patterns"}
+        ]
+    },
+    fire: {
+        before: [
+            {icon: "tree", title: "Create Defensible Space", desc: "Clear vegetation 30ft around structures"},
+            {icon: "scissors", title: "Remove Dead Vegetation", desc: "Trim trees, remove dry grass/leaves"},
+            {icon: "house-gear", title: "Fire-Resistant Materials", desc: "Metal roofing, non-combustible siding"},
+            {icon: "water", title: "Water Supply Ready", desc: "Hoses, sprinklers accessible"},
+            {icon: "bag-fill", title: "Go-Bag Prepared", desc: "Documents, medications, valuables ready"},
+            {icon: "megaphone", title: "Community FireWise", desc: "Join neighborhood fire prevention program"}
+        ],
+        during: [
+            {icon: "door-closed", title: "Close All Openings", desc: "Doors, windows, vents to prevent embers"},
+            {icon: "droplet", title: "Wet Roof/Surroundings", desc: "Spray water if time permits"},
+            {icon: "box-arrow-right", title: "Evacuate Early", desc: "Don't wait for orders if fire approaches"},
+            {icon: "phone", title: "Call 911", desc: "Report fire, never assume someone else did"}
+        ],
+        after: [
+            {icon: "cone-striped", title: "Wait for All-Clear", desc: "Hot spots can reignite for days"},
+            {icon: "lungs", title: "Wear N95 Mask", desc: "Ash contains toxic chemicals"},
+            {icon: "camera", title: "Document Everything", desc: "Insurance requires proof of loss"},
+            {icon: "tree-fill", title: "Replant Native Species", desc: "Restore ecosystem with fire-resistant plants"}
+        ],
+        nasa: [
+            {mission: "MODIS/VIIRS Fire Detection", desc: "Detects active fires globally every 12 hours"},
+            {mission: "ECOSTRESS", desc: "Measures vegetation water stress - predicts fire danger"},
+            {mission: "Landsat", desc: "Maps burn severity to guide recovery efforts"},
+            {mission: "GEDI", desc: "3D forest structure helps predict fire behavior"}
+        ]
+    },
+    cyclone: {
+        before: [
+            {icon: "shield-fill-check", title: "Reinforce Structure", desc: "Hurricane straps, impact windows"},
+            {icon: "tree-fill", title: "Trim Trees", desc: "Remove weak branches that could fall"},
+            {icon: "boxes", title: "Secure Outdoor Items", desc: "Bring inside or anchor down"},
+            {icon: "fuel-pump", title: "Fuel Vehicle", desc: "Gas stations close during storms"},
+            {icon: "prescription2", title: "Stock Medications", desc: "7-day supply minimum"},
+            {icon: "cash-stack", title: "Cash on Hand", desc: "ATMs may not work after storm"}
+        ],
+        during: [
+            {icon: "building", title: "Interior Room", desc: "Stay in windowless room, lowest floor"},
+            {icon: "eye", title: "Beware the Eye", desc: "Calm doesn't mean it's over - stay inside"},
+            {icon: "phone-vibrate", title: "Conserve Battery", desc: "Power may be out for days"},
+            {icon: "water", title: "Fill Bathtubs", desc: "Last-minute water storage"}
+        ],
+        after: [
+            {icon: "exclamation-triangle", title: "Check for Hazards", desc: "Gas leaks, damaged wiring, flooding"},
+            {icon: "droplet-slash", title: "Purify Water", desc: "Boil or treat until authorities say safe"},
+            {icon: "tools", title: "Temporary Repairs", desc: "Tarp roofs to prevent further damage"},
+            {icon: "recycle", title: "Sustainable Rebuild", desc: "Use storm-resistant green building practices"}
+        ],
+        nasa: [
+            {mission: "GOES-R Satellites", desc: "Tracks storm formation, intensity, path every 30 seconds"},
+            {mission: "CYGNSS", desc: "Measures wind speed inside storms for better forecasting"},
+            {mission: "Sentinel SAR", desc: "Assesses damage even through clouds immediately after landfall"},
+            {mission: "ISS Lightning Mapper", desc: "Lightning data improves storm intensity prediction"}
+        ]
+    }
+};
+
+document.getElementById('generatePlanBtn').addEventListener('click', function() {
+    const concern = document.getElementById('concernSelect').value;
+    const region = document.getElementById('regionSelect').value;
+    
+    if (!concern || !region) {
+        alert('Please select both region and disaster type');
+        return;
+    }
+
+    const plan = actionPlans[concern];
+    if (!plan) return;
+
+    // Populate Before Actions
+    const beforeContainer = document.getElementById('beforeActions');
+    beforeContainer.innerHTML = plan.before.map(action => `
+        <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-700">
+            <div class="flex items-start">
+                <i class="bi bi-${action.icon} text-2xl text-blue-500 mr-3 mt-1"></i>
+                <div>
+                    <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-1">${action.title}</h4>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">${action.desc}</p>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    // Populate During Actions
+    const duringContainer = document.getElementById('duringActions');
+    duringContainer.innerHTML = plan.during.map(action => `
+        <div class="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg border border-orange-200 dark:border-orange-700">
+            <div class="flex items-start">
+                <i class="bi bi-${action.icon} text-2xl text-orange-500 mr-3 mt-1"></i>
+                <div>
+                    <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-1">${action.title}</h4>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">${action.desc}</p>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    // Populate After Actions
+    const afterContainer = document.getElementById('afterActions');
+    afterContainer.innerHTML = plan.after.map(action => `
+        <div class="bg-emerald-50 dark:bg-emerald-900/20 p-4 rounded-lg border border-emerald-200 dark:border-emerald-700">
+            <div class="flex items-start">
+                <i class="bi bi-${action.icon} text-2xl text-emerald-500 mr-3 mt-1"></i>
+                <div>
+                    <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-1">${action.title}</h4>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">${action.desc}</p>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    // Populate NASA Support
+    const nasaContainer = document.getElementById('nasaSupport');
+    nasaContainer.innerHTML = plan.nasa.map(mission => `
+        <div class="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-lg border border-indigo-300 dark:border-indigo-700">
+            <div class="flex items-start">
+                <i class="bi bi-satellite text-2xl text-indigo-400 mr-3 mt-1"></i>
+                <div>
+                    <h4 class="font-bold text-indigo-300 mb-1">${mission.mission}</h4>
+                    <p class="text-sm text-gray-300">${mission.desc}</p>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    // Show results
+    document.getElementById('actionPlanResults').classList.remove('hidden');
+    document.getElementById('actionPlanResults').scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+</script>
 </div>
 
 <!--  Footer -->
@@ -2115,9 +2472,11 @@ document.getElementById('analysisForm').addEventListener('submit', function(e) {
 <script type="module" src="js/script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    // Initialize theme on page load
     document.addEventListener('DOMContentLoaded', function() {
         initializeTheme();
         
+        // Enhanced client-side validation with professional UX
         const form = document.getElementById('analysisForm');
         const analyzeBtn = document.getElementById('analyzeBtn');
         const originalBtnContent = analyzeBtn.innerHTML;
@@ -2148,6 +2507,7 @@ document.getElementById('analysisForm').addEventListener('submit', function(e) {
                 }
             }
             
+            // Professional loading state
             analyzeBtn.disabled = true;
             analyzeBtn.innerHTML = '<i class="bi bi-arrow-repeat animate-spin mr-2"></i>Processing SAR Data...';
             analyzeBtn.className = 'bg-gradient-to-r from-slate-400 to-slate-500 text-white font-semibold px-10 py-4 rounded-xl text-lg professional-shadow cursor-not-allowed';
@@ -2160,6 +2520,7 @@ document.getElementById('analysisForm').addEventListener('submit', function(e) {
             }, 30000);
         });
 
+        // Professional alert system
         function showAlert(message, type = 'info') {
             const alertContainer = document.createElement('div');
             let bgClass = 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700 text-blue-800 dark:text-blue-300';
@@ -2178,6 +2539,7 @@ document.getElementById('analysisForm').addEventListener('submit', function(e) {
             const form = document.getElementById('analysisForm');
             form.parentNode.insertBefore(alertContainer, form);
             
+            // Auto dismiss after 5 seconds
             setTimeout(() => {
                 if (alertContainer.parentNode) {
                     alertContainer.remove();
@@ -2185,6 +2547,7 @@ document.getElementById('analysisForm').addEventListener('submit', function(e) {
             }, 5000);
         }
 
+        // Enhanced file upload feedback
         document.getElementById('image').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -2201,6 +2564,7 @@ document.getElementById('analysisForm').addEventListener('submit', function(e) {
             }
         });
 
+        // Professional feature input helper
         document.getElementById('features').addEventListener('input', function(e) {
             const values = e.target.value.split(',');
             const validCount = values.filter(val => val.trim() && !isNaN(parseFloat(val.trim()))).length;
@@ -2227,6 +2591,7 @@ document.getElementById('analysisForm').addEventListener('submit', function(e) {
             }
         });
 
+        // Professional carousel functionality
         const carousel = document.querySelector('.flex.gap-8');
         const prevBtn = document.querySelector('.carousel-prev');
         const nextBtn = document.querySelector('.carousel-next');
@@ -2242,6 +2607,7 @@ document.getElementById('analysisForm').addEventListener('submit', function(e) {
             function updateCarousel() {
                 carousel.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
                 
+                // Update button states with professional styling
                 prevBtn.style.opacity = currentIndex === 0 ? '0.5' : '1';
                 nextBtn.style.opacity = currentIndex >= maxIndex ? '0.5' : '1';
             }
@@ -2297,6 +2663,7 @@ document.getElementById('analysisForm').addEventListener('submit', function(e) {
             // Initial setup
             updateCarousel();
             
+            // Handle resize with debouncing
             let resizeTimeout;
             window.addEventListener('resize', () => {
                 clearTimeout(resizeTimeout);
@@ -2349,7 +2716,7 @@ document.getElementById('analysisForm').addEventListener('submit', function(e) {
         }
     });
 
-    //  Theme Toggle Functionality
+    // Professional Theme Toggle Functionality
     function initializeTheme() {
         const savedTheme = localStorage.getItem('theme') || 'light';
         const html = document.documentElement;
@@ -2379,7 +2746,7 @@ document.getElementById('analysisForm').addEventListener('submit', function(e) {
         }
     }
 
-    //  scroll animations
+    // Professional scroll animations
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
@@ -2393,12 +2760,12 @@ document.getElementById('analysisForm').addEventListener('submit', function(e) {
         });
     }, observerOptions);
 
-    // Observe all sections with  animations
+    // Observe all sections with premium animations
     document.querySelectorAll('.section-premium').forEach(section => {
         observer.observe(section);
     });
 
-    //  grid flow animation
+    // Professional grid flow animation
     const style = document.createElement('style');
     style.textContent = `
         @keyframes grid-flow {
