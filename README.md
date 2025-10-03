@@ -265,7 +265,8 @@ The **Hero & Index** section introduces *Echo Explorer’s* vision:
 - Establishes the project’s mission to bridge **space technology** with **climate action**.  
 
 
-<img width="1766" height="844" alt="image" src="https://github.com/user-attachments/assets/c6ef5e6e-1dcd-4756-82c1-fea707c7b72a" />
+<img width="1880" height="914" alt="Screenshot 2025-09-18 221519" src="https://github.com/user-attachments/assets/2b026c89-c088-4440-889b-be0da4ac8974" />
+
 
 
 ## 🛰️ CosmoRadar System  
@@ -279,8 +280,9 @@ The **CosmoRadar System** is a radar-based Earth observation module designed to 
 This system bridges the gap between **space technology and real-world impact**, helping communities, policymakers, and organizations respond more effectively to environmental challenges.  
 
 
-<img width="1849" height="913" alt="Screenshot 2025-09-01 171831" src="https://github.com/user-attachments/assets/298fb426-4fc7-4b85-8b53-5c85b1deae07" />
-<img width="1847" height="905" alt="Screenshot 2025-09-01 172041" src="https://github.com/user-attachments/assets/cf6e20f7-e4c7-4593-94f0-46f60e82946b" />
+<img width="1904" height="912" alt="image" src="https://github.com/user-attachments/assets/6d75b87c-7e19-4879-86ec-b72524177eea" />
+
+<img width="1887" height="913" alt="image" src="https://github.com/user-attachments/assets/744c61b3-b649-4c0e-bb7d-b17726db1ba7" />
 
 
 ## 📡 SAR Data Analysis & Climate Risk Prediction  
