@@ -316,7 +316,8 @@ Together, these capabilities position the platform as a **decision-support syste
 
 ## Disaster Preparedness & Action Hub
 <img width="1215" height="889" alt="Screenshot 2025-10-03 154943" src="https://github.com/user-attachments/assets/e08e28fa-e670-4875-b7db-747412c7431c" />
-<img width="1493" height="924" alt="image" src="https://github.com/user-attachments/assets/12211139-09cb-40f7-ac94-cffd173cd311" />
+<img width="1012" height="795" alt="image" src="https://github.com/user-attachments/assets/0c0369ee-c338-4a7b-a8e4-2c75badaa3d9" />
+
 
 
 
