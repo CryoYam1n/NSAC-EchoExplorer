@@ -290,7 +290,8 @@ This module focuses on **SAR-driven climate intelligence**, powered by:
 - **Machine Learning & Deep Learning pipelines** for climate risk modeling.  
 - **Predictive frameworks** capable of anticipating environmental and societal risks.  
 
-<img width="1142" height="2520" alt="image" src="https://github.com/user-attachments/assets/0c688e61-5ce5-43b3-ba82-28cad0aea3fb" />
+<img width="1122" height="793" alt="image" src="https://github.com/user-attachments/assets/cd8217bc-b02d-4efa-803d-6f9736bccff4" />
+
 <img width="904" height="846" alt="Screenshot 2025-10-02 040008" src="https://github.com/user-attachments/assets/7d64d0ac-b9de-4fd7-a1e9-edb4cb6278f5" />
 <img width="1033" height="790" alt="Screenshot 2025-10-02 231859" src="https://github.com/user-attachments/assets/1d1b2946-4784-4917-941f-3f18513eebe1" />
 <img width="1032" height="832" alt="Screenshot 2025-10-02 231952" src="https://github.com/user-attachments/assets/a659c4bf-6c83-4709-9f6e-1f64c56b106a" />
