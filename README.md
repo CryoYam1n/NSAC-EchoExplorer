@@ -292,6 +292,10 @@ This module focuses on **SAR-driven climate intelligence**, powered by:
 
 <img width="1142" height="2520" alt="image" src="https://github.com/user-attachments/assets/0c688e61-5ce5-43b3-ba82-28cad0aea3fb" />
 <img width="904" height="846" alt="Screenshot 2025-10-02 040008" src="https://github.com/user-attachments/assets/7d64d0ac-b9de-4fd7-a1e9-edb4cb6278f5" />
+<img width="1033" height="790" alt="Screenshot 2025-10-02 231859" src="https://github.com/user-attachments/assets/1d1b2946-4784-4917-941f-3f18513eebe1" />
+<img width="1032" height="832" alt="Screenshot 2025-10-02 231952" src="https://github.com/user-attachments/assets/a659c4bf-6c83-4709-9f6e-1f64c56b106a" />
+<img width="789" height="436" alt="Screenshot 2025-10-03 014114" src="https://github.com/user-attachments/assets/31255f6e-f860-484a-b343-b3f5c39eaff2" />
+<img width="811" height="907" alt="Screenshot 2025-10-03 003416" src="https://github.com/user-attachments/assets/d27cfaf3-7456-4ef8-9dfd-ab8c208a90dc" />
 
 
 
@@ -308,6 +312,11 @@ This module extends beyond climate monitoring to address **global resilience and
 Together, these capabilities position the platform as a **decision-support system** for governments, humanitarian agencies, and international organizations working toward long-term resilience and global security.  
 
 <img width="1155" height="922" alt="Screenshot 2025-09-16 034902" src="https://github.com/user-attachments/assets/5492c0d4-79cd-4958-af8d-04c622dd660d" />
+
+
+## Disaster Preparedness & Action Hub
+<img width="1215" height="889" alt="Screenshot 2025-10-03 154943" src="https://github.com/user-attachments/assets/e08e28fa-e670-4875-b7db-747412c7431c" />
+<img width="1493" height="924" alt="image" src="https://github.com/user-attachments/assets/12211139-09cb-40f7-ac94-cffd173cd311" />
 
 
 
