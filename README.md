@@ -775,6 +775,7 @@ python data_processor.py --stats
 ## 🎨 Platform Interface
 
 ### 1. Hero & Dashboard
+<img width="1880" height="914" alt="Screenshot 2025-09-18 221519" src="https://github.com/user-attachments/assets/be3423a8-f5ed-4f27-b84c-58a56dd3d725" />
 
 The landing interface introduces Echo Explorer's mission:
 - Combines radar insights with Earth intelligence
@@ -782,21 +783,22 @@ The landing interface introduces Echo Explorer's mission:
 - Clear navigation to all platform features
 
 ### 2. Cosmo Radar System
-<img width="1904" height="912" alt="Screenshot 2025-10-03 181214" src="https://github.com/user-attachments/assets/6409fa12-9b59-4c03-8a2c-1b5ee770ed53" />
-<img width="1887" height="913" alt="Screenshot 2025-10-03 181559" src="https://github.com/user-attachments/assets/920061b6-459b-4906-8bcb-863155110caf" />
+<img width="1904" height="912" alt="Screenshot 2025-10-03 181214" src="https://github.com/user-attachments/assets/566dc418-3cd5-4417-a985-1b23cc58c703" />
+<img width="1887" height="913" alt="Screenshot 2025-10-03 181559" src="https://github.com/user-attachments/assets/25cfcc17-2c19-4140-964c-76a89ab664ed" />
 
 Advanced radar analysis module featuring:
 - Multi-band SAR processing (L/X/C-band)
 - Real-time environmental change detection
 - Early warning signal identification
 - Geospatial intelligence visualization
-<img width="877" height="827" alt="Screenshot 2025-10-02 040608" src="https://github.com/user-attachments/assets/05001c34-ee49-45c0-aee1-d7ab96cbb0da" />
-<img width="919" height="832" alt="Screenshot 2025-10-02 040142" src="https://github.com/user-attachments/assets/5bce178d-545a-42c7-978e-f657a490cc23" />
-<img width="888" height="683" alt="Screenshot 2025-10-03 014339" src="https://github.com/user-attachments/assets/32fe96a2-44cf-41fa-ba66-cdcd4b5c53b7" />
-<img width="789" height="436" alt="Screenshot 2025-10-03 014114" src="https://github.com/user-attachments/assets/808f0890-b015-42d8-a980-1b4bafd006f0" />
+<img width="939" height="827" alt="Screenshot 2025-10-02 040103" src="https://github.com/user-attachments/assets/ce69956f-4b59-474a-b680-ac5b5303c9db" />
+<img width="919" height="832" alt="Screenshot 2025-10-02 040142" src="https://github.com/user-attachments/assets/fe1fbff5-dc4b-4d76-b8e0-173de3f9a893" />
+<img width="789" height="436" alt="Screenshot 2025-10-03 014114" src="https://github.com/user-attachments/assets/1cd52b94-5fef-4d20-909a-4f3a68e258d7" />
+<img width="888" height="683" alt="Screenshot 2025-10-03 014339" src="https://github.com/user-attachments/assets/d55996ab-a1f8-4a67-8ff5-d9634783621f" />
+
 
 ### 3. Prediction Interface
-<img width="811" height="907" alt="Screenshot 2025-10-03 003416" src="https://github.com/user-attachments/assets/896cb2f8-e8d5-4d38-9ea3-9cd20ecbc2b6" />
+<img width="811" height="907" alt="Screenshot 2025-10-03 003416" src="https://github.com/user-attachments/assets/cae983cc-04ca-4c6e-b81a-9c1c109b7b44" />
 
 Interactive risk assessment tools:
 - File upload for SAR imagery analysis
@@ -805,8 +807,9 @@ Interactive risk assessment tools:
 - Probability distribution across all hazards
 
 ### 4. Climate Disaster Risk Platform
-<img width="1133" height="1079" alt="Screenshot 2025-09-26 203344" src="https://github.com/user-attachments/assets/70a6313b-9367-4e7d-80b2-61d10db7328b" />
-<img width="1105" height="1079" alt="Screenshot 2025-09-26 203123" src="https://github.com/user-attachments/assets/a45a5d92-578f-4dfe-ac17-ffd99a5f92ca" />
+<img width="1133" height="1079" alt="Screenshot 2025-09-26 203344" src="https://github.com/user-attachments/assets/6df4f0d8-8460-484b-8a30-1f8369b9c83d" />
+<img width="1105" height="1079" alt="Screenshot 2025-09-26 203123" src="https://github.com/user-attachments/assets/7f4086f1-1c6c-450f-81e5-38d0eec9e6d0" />
+
 
 Comprehensive dashboard displaying:
 - Global risk heatmaps
@@ -815,8 +818,9 @@ Comprehensive dashboard displaying:
 - Predictive security intelligence
 
 ### 5. Action Hub
-<img width="1215" height="889" alt="Screenshot 2025-10-03 154943" src="https://github.com/user-attachments/assets/ef7f69e3-29b5-4601-a365-2199435a7426" />
-<img width="1012" height="795" alt="Screenshot 2025-10-03 160954" src="https://github.com/user-attachments/assets/d6f936ad-e52e-445c-aed7-6806c64d1189" />
+<img width="1215" height="889" alt="Screenshot 2025-10-03 154943" src="https://github.com/user-attachments/assets/a0277b81-8ff6-41bb-aec5-41c2343ae034" />
+<img width="1012" height="795" alt="Screenshot 2025-10-03 160954" src="https://github.com/user-attachments/assets/bd48b64a-90fc-40c3-b8bf-2c665525a005" />
+
 
 Disaster preparedness resources:
 - Emergency response protocols
