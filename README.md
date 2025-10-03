@@ -754,16 +754,44 @@ MODEL TRAINING
 ================================================================================
 Model                     Accuracy    F1-Score    CV Mean    
 -------------------------------------------------------------
-Random Forest            0.XXXX      0.XXXX      0.XXXX
-Gradient Boosting        0.XXXX      0.XXXX      0.XXXX
-Logistic Regression      0.XXXX      0.XXXX      0.XXXX
-Neural Network           0.XXXX      0.XXXX      0.XXXX
-SVM                      0.XXXX      0.XXXX      0.XXXX
+Random Forest            0.9303       0.9366       0.9303
+Gradient Boosting        0.XXXX       0.XXXX        0.XXXX
+Logistic Regression      0.9303       0.9366       0.9303 
+Neural Network           0.9518       0.9583       0.9503  
+SVM                      0.9480       0.9544       0.9496  
 ...
 
-Best Model: Random Forest
-Test Accuracy: 0.XXXX
-F1-Score: 0.XXXX
+Best Model: Neural Network
+Test Accuracy: 0.9480
+F1-Score: 0.9542
+
+
+
+Classification Report:
+                      precision    recall  f1-score   support
+
+               Flood     1.0000    0.9959    0.9979       243
+     Urban Heat Risk     0.9901    1.0000    0.9950       200
+         Forest Fire     0.9461    0.8733    0.9082       221
+       Deforestation     0.2632    0.4762    0.3390        21
+             Drought     1.0000    1.0000    1.0000        61
+Landslide Monitoring     1.0000    0.9615    0.9804        26
+   Volcanic Eruption     1.0000    1.0000    1.0000        17
+
+            accuracy                         0.9480       789
+           macro avg     0.8856    0.9010    0.8887       789
+        weighted avg     0.9628    0.9480    0.9542       789
+
+2025-10-03 17:42:11,072 - INFO -
+Confusion Matrix:
+[[242   1   0   0   0   0   0]
+ [  0 200   0   0   0   0   0]
+ [  0   0 193  28   0   0   0]
+ [  0   0  11  10   0   0   0]
+ [  0   0   0   0  61   0   0]
+ [  0   1   0   0   0  25   0]
+ [  0   0   0   0   0   0  17]]
+
 
 Model saved: climate_disaster_model.pkl
 Scaler saved: climate_scaler.pkl
