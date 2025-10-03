@@ -57,6 +57,25 @@
 
 ## 📊NASA Dataset Categories
 
+### 🗃️ Dataset Information
+
+#### Storage Details
+| Property | Value |
+|----------|-------|
+| **Total Files** | 106,324 |
+| **Total Folders** | 45 |
+| **Dataset Size** | 77.6 GB (83,340,203,568 bytes) |
+| **Size on Disk** | 77.8 GB (83,556,093,952 bytes) |
+
+#### Dataset Structure
+- The dataset is organized into 45 main folders
+- Contains over 106,000 SAR imagery files
+- Includes raw satellite data, processed imagery, and metadata
+- Comprehensive coverage for climate modeling and analysis
+
+---
+
+
 ### 1. 🌊 Flood & Drought Analysis
 
 #### Precipitation Data
