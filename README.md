@@ -315,6 +315,7 @@ This module extends beyond climate monitoring to address **global resilience and
 Together, these capabilities position the platform as a **decision-support system** for governments, humanitarian agencies, and international organizations working toward long-term resilience and global security.  
 
 <img width="1155" height="922" alt="Screenshot 2025-09-16 034902" src="https://github.com/user-attachments/assets/5492c0d4-79cd-4958-af8d-04c622dd660d" />
+<img width="1206" height="922" alt="Screenshot 2025-09-16 035052" src="https://github.com/user-attachments/assets/8a0c4a55-92fc-4ea4-ac4e-f00ae46010d0" />
 
 
 ## Disaster Preparedness & Action Hub
