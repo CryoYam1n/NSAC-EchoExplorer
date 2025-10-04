@@ -355,21 +355,17 @@ echo-explorer/
 ├── model_trainer.py                # ML model training and evaluation
 ├── requirements.txt                # Python dependencies
 ├── README.md                       # Project documentation
-├── templates/
-│   ├── index.html                 # Main web interface
-│   ├── dashboard.html             # Climate disaster dashboard
-│   └── prediction.html            # Risk prediction interface
+├── templates/                 
+│   └── index.html                  # Main web interface
 ├── static/
-│   ├── css/
-│   │   ├── main.css
-│   │   └── dashboard.css
 │   ├── js/
 │   │   ├── GSI.js                 
 │   │   ├── CDRP.js             
-│   │   └── script.js.js         
+│   │   └── script.js.js           # Real-time prediction updates
 │   └── assets/                    # Images and media files
 │       ├── icons/
-│       └── maps/
+│       ├── *.gif
+│       └── *.png
 ├── models/                         # Trained ML models
 │   ├── flood_model.pkl
 │   ├── fire_model.pkl
