@@ -33,7 +33,7 @@
 
 ```mermaid
 graph TB
-    A[NASA SAR Data] --> B[Cosmo Radar System]
+    A[Cosmo Radar System] --> B[NASA SAR Data]
     B --> C[Feature Extraction Pipeline]
     C --> D[ML/DL Models]
     D --> E[Climate Disaster Risk Platform]
