@@ -354,6 +354,7 @@ echo-explorer/
 ├── data_processor.py               # SAR data processing pipeline
 ├── model_trainer.py                # ML model training and evaluation
 ├── requirements.txt                # Python dependencies
+├── processed_sar_data.npz
 ├── README.md                       # Project documentation
 ├── templates/                 
 │   └── index.html                  # Main web interface
