@@ -781,6 +781,9 @@ The landing interface introduces Echo Explorer's mission:
 <img width="1887" height="913" alt="Screenshot 2025-10-03 181559" src="https://github.com/user-attachments/assets/25cfcc17-2c19-4140-964c-76a89ab664ed" />
 
 Advanced radar analysis module featuring:
+
+<img width="1122" height="793" alt="Screenshot 2025-10-03 180003" src="https://github.com/user-attachments/assets/b1064e19-04ab-46d4-8b09-3088732954c1" />
+
 - Multi-band SAR processing (L/X/C-band)
 - Real-time environmental change detection
 - Early warning signal identification
