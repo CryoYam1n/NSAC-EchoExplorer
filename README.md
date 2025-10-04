@@ -364,9 +364,9 @@ echo-explorer/
 │   │   ├── main.css
 │   │   └── dashboard.css
 │   ├── js/
-│   │   ├── map.js                # Interactive map visualization
-│   │   ├── charts.js             # Data visualization charts
-│   │   └── prediction.js         # Real-time prediction updates
+│   │   ├── GSI.js                 
+│   │   ├── CDRP.js             
+│   │   └── script.js.js         
 │   └── assets/                    # Images and media files
 │       ├── icons/
 │       └── maps/
