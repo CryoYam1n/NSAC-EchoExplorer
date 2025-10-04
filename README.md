@@ -361,8 +361,8 @@ echo-explorer/
 │   ├── js/
 │   │   ├── GSI.js                 
 │   │   ├── CDRP.js             
-│   │   └── script.js.js           # Real-time prediction updates
-│   └── assets/                    # Images and media files
+│   │   └── script.js               # Real-time prediction updates
+│   └── assets/                     # Images and media files
 │       ├── icons/
 │       ├── *.gif
 │       └── *.png
