@@ -371,9 +371,6 @@ echo-explorer/
 │   ├── fire_model.pkl
 │   ├── cyclone_model.pkl
 │   └── uhi_model.pkl
-├── notebooks/                      # Jupyter notebooks for analysis
-│   ├── data_exploration.ipynb
-│   └── model_evaluation.ipynb
 └── NASA SAR Data/                  # NASA Earthdata datasets
     │
     ├── WaterBodies Dataset(flood)/
